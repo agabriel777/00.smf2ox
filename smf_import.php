@@ -16,6 +16,7 @@ function importUsers ($lines)
 		return runQuery($query);
 	}
 }
+//asta sa zicem ca am facut, cu user-ii da restul campurilor din smf tre sa vad pe unde sa le bag
 
 function getUserData ( $line )
 {
@@ -120,6 +121,7 @@ function getPostData( $line )
 	
 	
 	// Adaugare filmulete din recomandari muzicale in Video din Oxwall
+	
 	
 	return $post;
 }
