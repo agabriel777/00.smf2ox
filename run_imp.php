@@ -7,7 +7,7 @@ if (!$link) {
 }
 echo 'Connected successfully'."<br>";
 
-get_smf_user_lines($link);
+update_users($link);
 
 mysqli_close($link);
 ?>
