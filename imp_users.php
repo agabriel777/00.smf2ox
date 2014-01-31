@@ -6,7 +6,6 @@ function update_users($link)
 $query = "DELETE FROM ow_base_user WHERE id >6";
 $result = mysqli_query($link, $query);
 
-
 $query = "DELETE FROM ow_base_question_data WHERE id >20";
 $result = mysqli_query($link, $query);
 
@@ -108,6 +107,3 @@ function inUserDb ($link, $username)
 	}
 	
 }
-
-
-?>
