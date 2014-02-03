@@ -7,6 +7,7 @@ function update_users($link)
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 $query = "DELETE FROM ow_base_user WHERE id >6";
 $result = mysqli_query($link, $query);
 
@@ -15,6 +16,10 @@ $result = mysqli_query($link, $query);
 
 
 $query = "select * from smf_members order by member_name";
+=======
+	$query = "DELETE FROM ow_base_question_data WHERE id >20";
+	$result = mysqli_query($link, $query);
+>>>>>>> 787f6757a596f633b7a5e022dd7ff4ca62c8f3af
 =======
 	$query = "DELETE FROM ow_base_question_data WHERE id >20";
 	$result = mysqli_query($link, $query);
