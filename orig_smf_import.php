@@ -125,5 +125,26 @@ function getPostData( $line )
 	
 	return $post;
 }
+ function importLikes ($lines)
+{
+	foreach ($lines as $line)
+	{
+		$like = getLikeData($line);
+		///
+		return runQuery($query);
+	}
+}
+
+
+ function importVideosFromMusic ($lines)
+{
+	foreach ($lines as $line)
+	{
+		$post = getPost($line);
+		///
+		return runQuery($query);
+	}
+}
+
 
 ?>
