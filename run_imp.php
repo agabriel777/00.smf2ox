@@ -1,24 +1,12 @@
 <?php
-require_once 'config.php';
+include 'config.php';
 include 'smf_import.php';
 
-function connectDB(){
 
-	$link = mysqli_connect($SQL_HOST.':'.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
-	if (!$link) return null;
-	return $link;
-}
+$link = mysqli_connect($SQL_HOST.':'.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
-function closeDB($link){
-	mysqli_close($link);
-}
-
-$link = connectDB()
-
-
-    
-	
-	die('Could not connect: ' . mysql_error());
+if (!$link) {
+    die('Could not connect: ' . mysql_error());
 }
 echo 'Connected successfully'."<br>";
 
