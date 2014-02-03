@@ -2,15 +2,16 @@
 
 function update_users($link)
 {
-
-$query = "DELETE FROM ow_base_user WHERE id >6";
-$result = mysqli_query($link, $query);
-
-$query = "DELETE FROM ow_base_question_data WHERE id >20";
+global $eol;
+$query = "truncate table ow_base_user";
 $result = mysqli_query($link, $query);
 
 
-$query = "select * from smf_members order by member_name";
+$query = "DELETE FROM ow_base_question_data WHERE userid NOT IN(SELECT id FROM ow_base_user)";
+$result = mysqli_query($link, $query);
+
+
+$query = "select * from smf_members order by date_registered";
 
 $result = mysqli_query($link, $query);
     printf("Select returned %d rows.\n <br>", mysqli_num_rows($result));
@@ -22,7 +23,6 @@ $result = mysqli_query($link, $query);
    
     /* free result set */
     mysqli_free_result($result);
-return;
 }
 
 
@@ -39,8 +39,10 @@ include 'config.inc.php';
 			if ($ip == -1 || $ip === FALSE) {
 				$ip=0;
 			}
+			
+			$user_name = str_replace('.','_',$row['member_name']);
 						
-			$query.= "( '".$row['email_address']."', '".$row['member_name']."', '".$row['email_address']."', ".$row['date_registered'].", ".$row['last_login'].", '290365aadde35a97f11207ca7e4279cc', 1, ".$ip.")";
+			$query.= "( '".$row['email_address']."', '".$user_name."', '".$row['email_address']."', ".$row['date_registered'].", ".$row['last_login'].", '290365aadde35a97f11207ca7e4279cc', 1, ".$ip.")";
 
 			$result = mysqli_query($link, $query);
 
@@ -49,10 +51,11 @@ include 'config.inc.php';
 	        echo $eol;
 						
 			$id = mysqli_insert_id($link);
-			echo "new id=".$id.$eol;
+			//echo "ow_id=".$id.$eol;
 
 			
 			if ($id!=0) {
+   			  upd($link, 'smf_members', 'id_member' , $row['id_member'], $id);
 			
 			echo "real_name...";
 			$q2 = "INSERT INTO `ow_base_question_data` (questionName, userID, textValue, intValue, dateValue) VALUES";

@@ -1,5 +1,4 @@
 <?php
-include 'config.php';
 
 function ins($link, $query)
 {
@@ -16,8 +15,8 @@ global $eol;
 function upd($link, $table_name, $id_name, $old_id, $new_id)
 {
 global $eol;
-$query = "update `".$table_name."` set new_id=".$new_id." where `".$id_name."` = ".$old_id;
-    echo $query.$eol;
+$query = "update `".$table_name."` set ow_id=".$new_id." where `".$id_name."` = ".$old_id;
+    //echo $query.$eol;
     $result = mysqli_query($link, $query);
   	if (!$result) {
 	   echo "E!: ".mysqli_error($link).$eol.$eol;
