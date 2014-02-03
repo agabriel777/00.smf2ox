@@ -1,7 +1,7 @@
 <?php
-include 'config.inc.php';
-include 'imp_users.php';
-include 'imp_topics.php';
+include 'config.php';
+include 'smf_import.php';
+
 
 $link = mysqli_connect($SQL_HOST.':'.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
@@ -10,12 +10,7 @@ if (!$link) {
 }
 echo 'Connected successfully'."<br>";
 
- // update_users($link);
-  
-  import_sections ($link);
+update_users($link);
 
-  import_groups ($link); 
-  
-  
 mysqli_close($link);
 ?>
