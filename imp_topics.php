@@ -1,6 +1,6 @@
 <?php
 include 'util.php';
-include 'config.inc.php';
+include 'config.php';
 
 function import_sections ($link) //from categories
 {

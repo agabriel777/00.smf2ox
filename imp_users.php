@@ -28,16 +28,18 @@ return;
 
 function importUser($link, $row)
 {
-include 'config.php';
+include 'config.inc.php';
 		if (!inUserDb($link, $row['member_name'])) 
 		{
 			echo $row['member_name'].' - insert...';
 		
 			$query = 'INSERT INTO `ow_base_user` (`email`, `username`, `password`, `joinStamp`, `activityStamp`, `accountType`, `emailVerify`, `joinIp`) VALUES ';
-			$ip = str_replace('.', '', $row['member_ip']);
-			
-			if (empty($ip)) { $ip='0'; echo "blank";}
-			
+
+			$ip = ip2long($row['member_ip']);
+			if ($ip == -1 || $ip === FALSE) {
+				$ip=0;
+			}
+						
 			$query.= "( '".$row['email_address']."', '".$row['member_name']."', '".$row['email_address']."', ".$row['date_registered'].", ".$row['last_login'].", '290365aadde35a97f11207ca7e4279cc', 1, ".$ip.")";
 
 			$result = mysqli_query($link, $query);
