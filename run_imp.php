@@ -1,5 +1,5 @@
 <?php
-include 'config.php';
+include 'config.inc.php';
 include 'imp_users.php';
 include 'imp_topics.php';
 
