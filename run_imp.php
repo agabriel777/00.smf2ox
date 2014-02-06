@@ -10,14 +10,15 @@ if (!$link) {
     die('Could not connect: ' . mysql_error());
 }
 echo 'Connected successfully'."<br>";
-
- // update_users($link);
+/*
+ update_users($link);
   
-  //import_sections ($link);
+  import_sections ($link);
 
-  //import_groups ($link); 
+  import_groups ($link); 
   
-  //import_topics($link);
+  import_topics($link);
+  */
   import_messages($link);
 mysqli_close($link);
 ?>
