@@ -3,3 +3,12 @@ ALTER TABLE smf_boards ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
 ALTER TABLE smf_categories ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
 ALTER TABLE smf_topics ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
 ALTER TABLE smf_messages ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
+
+
+UPDATE smf_topics
+SET id_member_started = (SELECT id_member
+FROM smf_messages m 
+WHERE m.id_topic=id_topic
+ORDER BY id_msg ASC
+LIMIT 1)
+WHERE id_member_started=0

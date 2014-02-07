@@ -4,7 +4,7 @@ function import_sections ($link) //from categories
 {
   global $eol;
   
-  $query = "DELETE FROM ow_forum_section";
+  $query = "TRUNCATE TABLE ow_forum_section";
   $result = mysqli_query($link, $query);
   
   
@@ -14,15 +14,16 @@ function import_sections ($link) //from categories
   echo $eol.$eol;
   printf("*******smf_categories: %d rows.\n <br>", mysqli_num_rows($result));
   echo $eol;
-    $id=0;
+    $id=1;
 	while($row = mysqli_fetch_array($result))
   {
      $qIns = "INSERT INTO ow_forum_section (id, name, `order`) VALUES ";
 	 $qIns.= "(".$id.", '".$row['name']."', ".$row['cat_order'].")";
-	 $id++;
+	 
 	 
 	 ins($link, $qIns);
 	 upd($link, 'smf_categories', 'id_cat', $row['id_cat'], $id);
+	 $id++;
   }
   mysqli_free_result($result);
 }
@@ -40,7 +41,7 @@ function import_groups ($link) //from boards
 {
   global $eol;
   
-  $query = "DELETE FROM `ow_forum_group`";
+  $query = "TRUNCATE TABLE `ow_forum_group`";
   $result = mysqli_query($link, $query);
   
 
@@ -50,11 +51,11 @@ function import_groups ($link) //from boards
   echo $eol.$eol;
   printf("*******smf_boards: %d rows.\n <br>", mysqli_num_rows($result));
   echo $eol;
-    $id=0;
+    $id=1;
 	while($row = mysqli_fetch_array($result))
   {
      $qIns = "INSERT INTO ow_forum_group (id, sectionId, name, description, `order`, entityId, isPrivate, roles) VALUES ";
-	 $qIns.= "(".$id.", '".get_section_id($link, $row['id_cat'])."', '".$row['name']."', '".$row['description']."', ".$row['board_order'].", NULL, 0, NULL)";
+	 $qIns.= "(".$id.", '".get_section_id($link, $row['id_cat'])."', '".mysql_real_escape_string($row['name'])."', '".mysql_real_escape_string($row['description'])."', ".$row['board_order'].", NULL, 0, NULL)";
 	 
 	 ins($link, $qIns);
 	 upd($link, 'smf_boards', 'id_board', $row['id_board'], $id);
@@ -81,7 +82,7 @@ function get_user_id($link, $old_id) {
 	//echo $q;
 	$result = mysqli_query($link, $q);
 	$row = mysqli_fetch_array($result);
-	if (empty($row['ow_id'])) {return (-1);}
+	if (empty($row['ow_id'])) { echo $old_id; return (-1);}
 	else return $row['ow_id'];
 }
 
@@ -93,7 +94,7 @@ function get_topic_descr($link, $smf_topic_id) {
 	$result = mysqli_query($link, $q);
 	$row = mysqli_fetch_array($result);
 	if (empty($row['subject'])) {return "blank";}
-	else return $row['subject'];
+	else return mysql_real_escape_string ($row['subject']);
 }
 
 
@@ -101,7 +102,7 @@ function import_topics ($link) //from topics
 {
   global $eol;
   
-  $query = "DELETE FROM `ow_forum_topic`";
+  $query = "TRUNCATE TABLE `ow_forum_topic`";
   $result = mysqli_query($link, $query);
   
 
@@ -111,7 +112,7 @@ function import_topics ($link) //from topics
   echo $eol.$eol;
   printf("*******smf_topics: %d rows.\n <br>", mysqli_num_rows($result));
   echo $eol;
-    $id=0;
+    $id=1;
 	while($row = mysqli_fetch_array($result))
   {
      $qIns = "INSERT INTO ow_forum_topic (id, groupId, userId, title, locked, sticky, temp, viewCount, lastPostId) VALUES ";
@@ -134,28 +135,36 @@ function get_topic_id($link, $old_id) {
 	return $row['ow_id'];
 }
 
-function import_messages ($link) //from topics
+
+function stripBBCode($text_to_search) {
+ $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
+ $replace = '';
+ return preg_replace($pattern, $replace, $text_to_search);
+}
+
+
+function import_posts ($link) //from topics
 {
   global $eol;
   
-  $query = "DELETE FROM `ow_forum_post`";
+  $query = "TRUNCATE TABLE `ow_forum_post`";
   $result = mysqli_query($link, $query);
   
 
-  $qsmf = "select * from smf_messages order by id_msg LIMIT 1000";
+  $qsmf = "select * from smf_messages order by id_msg LIMIT 1000000";
 
   $result = mysqli_query($link, $qsmf);
   echo $eol.$eol;
   printf("*******smf_messages: %d rows.\n <br>", mysqli_num_rows($result));
   echo $eol;
-    $id=0;
+    $id=1;
 	while($row = mysqli_fetch_array($result))
   {
   
-  echo "caut...".$row['id_topic'];
+ // echo "caut...".$row['id_topic'];
      $qIns = "INSERT INTO ow_forum_post (id, topicId, userId, text, createStamp) VALUES ";
 	 
-	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".get_user_id($link, $row['id_member']).", '".mysql_real_escape_string($row['body'])."', ".$row['poster_time'].")";
+	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".get_user_id($link, $row['id_member']).", '".mysql_real_escape_string(bbcode_to_html($row['body']))."', ".$row['poster_time'].")";
 	 
 	 ins($link, $qIns);
 	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id);
