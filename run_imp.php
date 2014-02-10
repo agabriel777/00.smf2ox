@@ -10,7 +10,7 @@ if (!$link) {
     die('Could not connect: ' . mysql_error());
 }
 echo 'Connected successfully'."<br>";
-
+/*
   update_users($link);
   
   import_sections ($link); //smf_categories -> ow_forum_section
@@ -20,9 +20,12 @@ echo 'Connected successfully'."<br>";
   
   import_topics($link);  //smf_topics -> ow_forum_topic
 
-  
+  */
   ini_set('max_execution_time', 300); //300 seconds = 5 minutes
-  import_posts($link);  //smf_messages -> ow_forum_post
+  //import_posts($link);  //smf_messages -> ow_forum_post
+  
+  import_likes($link);
+  
   echo "done!";
 mysqli_close($link);
 ?>

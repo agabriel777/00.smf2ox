@@ -150,7 +150,7 @@ function import_posts ($link) //from topics
   $query = "TRUNCATE TABLE `ow_forum_post`";
   $result = mysqli_query($link, $query);
   
-
+ 
   $qsmf = "select * from smf_messages order by id_msg LIMIT 1000000";
 
   $result = mysqli_query($link, $qsmf);
@@ -163,15 +163,65 @@ function import_posts ($link) //from topics
   
  // echo "caut...".$row['id_topic'];
      $qIns = "INSERT INTO ow_forum_post (id, topicId, userId, text, createStamp) VALUES ";
-	 
-	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".get_user_id($link, $row['id_member']).", '".mysql_real_escape_string(bbcode_to_html($row['body']))."', ".$row['poster_time'].")";
+	 $userID = get_user_id($link, $row['id_member']);
+	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysql_real_escape_string(bbcode_to_html($row['body']))."', ".$row['poster_time'].")";
 	 
 	 ins($link, $qIns);
 	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id);
+	 
+ 
+	 
 	 $id++;
   }
   mysqli_free_result($result);
+  
+  echo "last read post...";
+  $q = "INSERT INTO `ow_forum_read_topic` (`topicId`, `userId`, `postId`) ";
+  $q.="SELECT t.`ow_id`, u.ow_id, m.ow_id ";
+  $q.="FROM smf_members u ";
+  $q.="LEFT JOIN smf_messages m ON m.`id_msg`=u.`id_msg_last_visit` ";
+  $q.="LEFT JOIN smf_topics t ON t.`id_topic`=m.`id_topic` ";
+  $q.="WHERE  id_msg_last_visit>0 ";
+  $q.="AND m.`id_msg` IS NOT NULL";
+  ins($link, $q);
+  echo "done";
 }
+
+
+
+function import_likes($link) {
+	 //import thanks
+	 
+  $query = "TRUNCATE TABLE `ow_newsfeed_like`";
+  $result = mysqli_query($link, $query);
+
+   
+	    $qLike = "INSERT INTO `ow_newsfeed_like` (`entityType`,`entityId`,`userId`,`timeStamp`) ";
+		$qLike.= "SELECT 'post' AS entitytype, m.`ow_id`, u.`ow_id`, g.`log_time` ";
+		$qLike.= "FROM smf_log_gpbp g ";
+		$qLike.= "LEFT JOIN smf_messages m ON m.`id_msg` = g.`id_msg` ";
+		$qLike.= "LEFT JOIN smf_members u ON u.`id_member`=g.`id_member` ";
+
+        $result = mysqli_query($link, $qLike);
+     
+	 
+	 
+}
+
+/*
+
+thanks
+ow_newsfeed_like 
+entityType = 'forum'
+entityId = postId
+useriD
+timeStamp
+
+last read post
+
+id_msg_last_visit din smf_members -> ow_forum_read_topic post_id=
+
+*/
 
 
 
