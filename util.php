@@ -91,6 +91,37 @@ function bbcode_to_html($bbtext){
   foreach($bbextended as $match=>$replacement){
     $bbtext = preg_replace($match, $replacement, $bbtext);
   }
+  
+  // Modificari suplimentare la text:
+ +	/* Daca include:
+ +	[img]LINK[/img] --> <span><img style="padding:5px;max-width:100%" src="LINK" /></span>
+ +	[url=LINK][/url] --> <span class="ow_ws_link"><a rel="nofollow" href="LINK target="_blank">LINK</a></span>
+ +	[url=LINK]NAME[/url] --> <span class="ow_ws_link"><a rel="nofollow" href="LINK target="_blank">NAME</a></span>
+ +	[quote][cite]USER:[/cite]text[/quote]
+ +	[quote author=USER link=... date=...]text[/quote]
+ +	&lt;blockquote&gt;&lt;cite&gt;Posted By: USER&lt;/cite&gt;TEXT&lt;/blockquote&gt;
+ +	&lt;img alt=":P" class="smiley" src="/extensions/Smile/IPB2.2/tongue.gif"&gt;&lt;/img&gt;
+ +	[imdb]0486946,zSvwmgWCJ2s[/imdb] --> http://www.imdb.com/title/tt0486946/,  http://www.youtube.com/watch?v=zSvwmgWCJ2s
+ +	[b]TEXT[/b]
+ +	[u]TEXT[/u]
+ +	[i]TEXT[/i]
+ +	[s]TEXT[/s]
+ +	[color]TEXT[/color]
+ +	[sup][/sup]
+ +	[sub][/sub]
+ +	[ulist]
+ +	[*]
+ +	[/ulist]
+ +	[hide][/hide] - 
+ +	[move][/move] - 
+ +	[youtube:COD]YOUTUBE[/youtube] --> YOUTUBE
+ +	
+ +	*/
+  
+  
+  
+  
+  
   return $bbtext;
 }
 //=====================================================================//
