@@ -1,3 +1,5 @@
+-- corectii inainte de update
+
 ALTER TABLE smf_members ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
 ALTER TABLE smf_boards ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
 ALTER TABLE smf_categories ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
@@ -5,7 +7,7 @@ ALTER TABLE smf_topics ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
 ALTER TABLE smf_messages ADD `ow_id` MEDIUMINT(11) DEFAULT NULL;
 ALTER TABLE ow_forum_read_topic ADD `postId` MEDIUMINT(11) DEFAULT NULL;
 
--- corectii
+
 
 UPDATE smf_members 
 SET email_address = CONCAT(member_name,"@vaspun.eu")
