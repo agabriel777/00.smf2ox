@@ -55,8 +55,8 @@ function import_groups ($link) //from boards
 	while($row = mysqli_fetch_array($result))
   {
      $qIns = "INSERT INTO ow_forum_group (id, sectionId, name, description, `order`, entityId, isPrivate, roles) VALUES ";
-	 $qIns.= "(".$id.", '".get_section_id($link, $row['id_cat'])."', '".mysql_real_escape_string($row['name'])."', '".mysql_real_escape_string($row['description'])."', ".$row['board_order'].", NULL, 0, NULL)";
-	 
+	 $qIns.= "(".$id.", '".get_section_id($link, $row['id_cat'])."', '".mysqli_real_escape_string($link,$row['name'])."', '".mysqli_real_escape_string($link,$row['description'])."', ".$row['board_order'].", NULL, 0, NULL)";
+	 echo $qIns;
 	 ins($link, $qIns);
 	 upd($link, 'smf_boards', 'id_board', $row['id_board'], $id);
 	 $id++;
@@ -94,7 +94,7 @@ function get_topic_descr($link, $smf_topic_id) {
 	$result = mysqli_query($link, $q);
 	$row = mysqli_fetch_array($result);
 	if (empty($row['subject'])) {return "blank";}
-	else return mysql_real_escape_string ($row['subject']);
+	else return mysqli_real_escape_string ($link,$row['subject']);
 }
 
 
@@ -164,7 +164,7 @@ function import_posts ($link) //from topics
  // echo "caut...".$row['id_topic'];
      $qIns = "INSERT INTO ow_forum_post (id, topicId, userId, text, createStamp) VALUES ";
 	 $userID = get_user_id($link, $row['id_member']);
-	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysql_real_escape_string(bbcode_to_html($row['body']))."', ".$row['poster_time'].")";
+	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysqli_real_escape_string($link,bbcode_to_html($row['body']))."', ".$row['poster_time'].")";
 	 
 	 ins($link, $qIns);
 	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id);

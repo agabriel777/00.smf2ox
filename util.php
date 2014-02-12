@@ -93,7 +93,7 @@ function bbcode_to_html($bbtext){
   }
   
   // Modificari suplimentare la text:
- +	/* Daca include:
+	/* Daca include:
  +	[img]LINK[/img] --> <span><img style="padding:5px;max-width:100%" src="LINK" /></span>
  +	[url=LINK][/url] --> <span class="ow_ws_link"><a rel="nofollow" href="LINK target="_blank">LINK</a></span>
  +	[url=LINK]NAME[/url] --> <span class="ow_ws_link"><a rel="nofollow" href="LINK target="_blank">NAME</a></span>

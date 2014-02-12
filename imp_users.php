@@ -3,7 +3,8 @@
 function update_users($link)
 {
 global $eol;
-$query = "delete from ow_base_user where id <> 999 and id<>888";
+global $USER_SKIP_QUERY;
+$query = "delete from ow_base_user where ".$USER_SKIP_QUERY;
 $result = mysqli_query($link, $query);
 
 
@@ -29,7 +30,7 @@ $result = mysqli_query($link, $query);
 function importUser($link, $row)
 {
 global $eol;
-include 'config.inc.php';
+// 'config.php';
 $chk = inUserDb($link, $row['member_name']);
 		if ($chk==-1) 
 		{
@@ -94,7 +95,9 @@ $chk = inUserDb($link, $row['member_name']);
 		{
 		    echo $row['member_name'].' - UPDATE...';
     		$query = "UPDATE `ow_base_user` SET `joinStamp` = ".$row['date_registered'].", `activityStamp` = ".$row['last_login']." WHERE `username` = '".$row['member_name']."'";
-			 
+			 $result = mysqli_query($link, $query);
+     		if ($result) { echo "ok updating ".$row['member_name']."<br>"; }
+	    	else  echo "error ".$result;
 			 
 			 upd($link, 'smf_members', 'id_member' , $row['id_member'], $chk);
 		}	
@@ -107,6 +110,7 @@ $chk = inUserDb($link, $row['member_name']);
 
 function inUserDb ($link, $username)
 {//return -1 sau id daca exista
+	if ($username=="mihaelab777")  $username="MihaSan";
 	$query = "SELECT id FROM `ow_base_user` WHERE `username` = '".$username."'";
 //	echo $query.$eol;
 	$result = mysqli_query($link, $query);

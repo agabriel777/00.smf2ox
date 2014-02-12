@@ -8,7 +8,7 @@ function import_likes($link) {
 
         echo "Import likes...";
 	    $qLike = "INSERT INTO `ow_newsfeed_like` (`entityType`,`entityId`,`userId`,`timeStamp`) ";
-		$qLike.= "SELECT 'post', m.`ow_id`, u.`ow_id`, g.`log_time` ";
+		$qLike.= "SELECT 'forum-post', m.`ow_id`, u.`ow_id`, g.`log_time` ";
 		$qLike.= "FROM smf_log_gpbp g ";
 		$qLike.= "LEFT JOIN smf_messages m ON m.`id_msg` = g.`id_msg` ";
 		$qLike.= "LEFT JOIN smf_members u ON u.`id_member`=g.`id_member` ";

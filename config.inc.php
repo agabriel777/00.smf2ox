@@ -5,5 +5,6 @@ $SQL_USER = "root";
 $SQL_PASS = "password";
 $SQL_DB   = "database";
 $TABLE_PREFIX = "ow_";
+$USER_SKIP_QUERY = 'id <> 999 and id <> 888';
 $eol = "<br>";
 ?>
