@@ -32,6 +32,7 @@ echo 'Connected successfully'."<br>";
   
     import_likes($link);
     import_last_read_post($link);
+	update_last_reply($link);
 	
   echo "done!";
 mysqli_close($link);

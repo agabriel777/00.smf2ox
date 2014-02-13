@@ -50,4 +50,17 @@ echo $eol.$qLike.$eol;
 		
 }
 
+function update_last_reply ($link) {
+global $eol;
+
+        echo "Update last_reply...";
+	    $qLike= "UPDATE ow_forum_topic SET lastPostId = (SELECT ow_id FROM smf_messages sm WHERE sm.`id_msg`=lastPostId)";
+        $result = mysqli_query($link, $qLike);
+	    if ($result) {
+		echo "ok.";
+		}
+		else {
+		echo "error!";
+		}
+}
 ?>
