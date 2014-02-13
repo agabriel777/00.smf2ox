@@ -14,7 +14,7 @@ if (!$link) {
     die('Could not connect: ' . mysql_error());
 }
 echo 'Connected successfully'."<br>";
-
+	mysqli_query($link,"SET NAMES utf8");
   update_users($link);
 
   
