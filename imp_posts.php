@@ -24,7 +24,10 @@ function import_sections ($link) //from categories
 	 ins($link, $qIns);
 	 upd($link, 'smf_categories', 'id_cat', $row['id_cat'], $id);
 	 $id++;
+	  if (! ($id % 10)) echo "$id..." ;
+	  if (! ($id % 1000)) echo "<br>";
   }
+    echo "Sections Done</br>";
   mysqli_free_result($result);
 }
 
@@ -56,11 +59,14 @@ function import_groups ($link) //from boards
   {
      $qIns = "INSERT INTO ow_forum_group (id, sectionId, name, description, `order`, entityId, isPrivate, roles) VALUES ";
 	 $qIns.= "(".$id.", '".get_section_id($link, $row['id_cat'])."', '".mysqli_real_escape_string($link,$row['name'])."', '".mysqli_real_escape_string($link,$row['description'])."', ".$row['board_order'].", NULL, 0, NULL)";
-	 echo $qIns;
+	 //echo $qIns;
 	 ins($link, $qIns);
 	 upd($link, 'smf_boards', 'id_board', $row['id_board'], $id);
 	 $id++;
+	 if (! ($id % 10)) echo "$id..." ;
+	 if (! ($id % 1000)) echo "<br>";
   }
+  echo "Groups Done</br>";
   mysqli_free_result($result);
 }
 
@@ -121,7 +127,10 @@ function import_topics ($link) //from topics
 	 ins($link, $qIns);
 	 upd($link, 'smf_topics', 'id_topic', $row['id_topic'], $id);
 	 $id++;
+	 if (! ($id % 10)) echo "$id..." ;
+	 if (! ($id % 1000)) echo "<br>";
   }
+    echo "Topics Done</br>";
   mysqli_free_result($result);
 }
 
@@ -172,7 +181,10 @@ function import_posts ($link) //from topics
  
 	 
 	 $id++;
+	 if (! ($id % 100)) echo "$id..." ;
+	 if (! ($id % 10000)) echo "<br>";
   }
+      echo "Posts Done</br>";
   mysqli_free_result($result);
   
 }
