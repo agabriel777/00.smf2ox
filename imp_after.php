@@ -14,7 +14,7 @@ global $q_update_last_reply;
 function import_likes($link) {
 	 //import thanks
 global $eol;
-global $Likes;
+global $qLikes;
 	 
   $query = "TRUNCATE TABLE `ow_newsfeed_like`";
   $result = mysqli_query($link, $query);
