@@ -4,7 +4,9 @@ function update_users($link)
 {
 global $eol;
 global $USER_SKIP_QUERY;
-$query = "delete from ow_base_user where ".$USER_SKIP_QUERY;
+
+$query = "delete from ow_base_user ".$USER_SKIP_QUERY;
+echo $query;
 $result = mysqli_query($link, $query);
 
 
