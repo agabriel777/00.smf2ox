@@ -185,9 +185,9 @@ function import_posts ($link,$update=false) //from topics
     $id=1;
 	while($row = mysqli_fetch_array($result))
   {
-     $qIns = "INSERT INTO ow_forum_post (id, topicId, userId, text, createStamp) VALUES ";
+     $qIns = "INSERT INTO ow_forum_post (id, topicId, userId, text, createStamp, isFromImport) VALUES ";
 	 $userID = get_user_id($link, $row['id_member']);
-	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysqli_real_escape_string($link,bbcode_to_html($row['body']))."', ".$row['poster_time'].")";
+	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysqli_real_escape_string($link,bbcode_to_html($row['body']))."', ".$row['poster_time'].",1)";
 	 
 	 ins($link, $qIns);
 	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id);
