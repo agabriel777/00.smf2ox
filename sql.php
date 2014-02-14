@@ -11,11 +11,12 @@ $q_update_last_reply = "UPDATE ow_forum_topic t SET t.lastPostId = (SELECT MAX(i
 		$qLikes.= "WHERE m.ow_id IS NOT NULL ";
 
 		// toate topicurile pt toti userii
-$last_read_post1 =		"insert into ow_forum_read_topic (topicId, userId, postId) ";
+$last_read_post1 =		    "insert into ow_forum_read_topic (topicId, userId, postId) ";
 $last_read_post1 .= 		"SELECT t.id AS tid, u.id AS uid, MAX(m.id) pid ";
 $last_read_post1 .= 		"FROM ow_forum_topic t ";
 $last_read_post1 .= 		"CROSS JOIN ow_base_user u ";
 $last_read_post1 .= 		"INNER JOIN ow_forum_post m ON m.topicid=t.id ";
+$last_read_post1 .= 		"GROUP BY t.id, u.id ";
 // where u.id=3 and t.id=424
 
 
