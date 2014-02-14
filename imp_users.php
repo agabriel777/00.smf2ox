@@ -1,12 +1,13 @@
 <?php
 
-function update_users($link)
+function update_users($link, $update = false)
 {
 global $eol;
 global $USER_SKIP_QUERY;
 
-$query = "delete from ow_base_user ".$USER_SKIP_QUERY;
-echo $query;
+$query = "delete from ow_base_user where 1=1 ".$USER_SKIP_QUERY;
+if ($update) { $query.=" and 1=0 ";} //sa nu stearga nimic
+
 $result = mysqli_query($link, $query);
 
 
@@ -14,10 +15,15 @@ $query = "DELETE FROM ow_base_question_data WHERE userid NOT IN(SELECT id FROM o
 $result = mysqli_query($link, $query);
 
 
-$query = "SELECT CASE WHEN email_address='' THEN member_name ELSE email_address END AS email_address2, a.* FROM smf_members a ORDER BY date_registered";
+$query = "SELECT CASE WHEN email_address='' THEN member_name ELSE email_address END AS email_address2, a.* FROM smf_members a ";
+if ($update) {
+$query .= "where a.ow_id is null ";
+} 
+$query .= "ORDER BY date_registered";
 
 $result = mysqli_query($link, $query);
-    printf("Select returned %d rows.\n <br>", mysqli_num_rows($result));
+  
+    printf("*******smf_members: %d rows.\n <br>", mysqli_num_rows($result));
 	echo $eol;
 	while($row = mysqli_fetch_array($result))
   {

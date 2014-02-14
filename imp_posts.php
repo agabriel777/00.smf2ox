@@ -1,14 +1,15 @@
 <?php
 
-function import_sections ($link) //from categories
+function import_sections ($link,$update=false) //from categories
 {
   global $eol;
   
   $query = "TRUNCATE TABLE ow_forum_section";
-  $result = mysqli_query($link, $query);
+  if (!$update) { $result = mysqli_query($link, $query); }
   
-  
-  $qSel = "select * from smf_categories order by id_cat";
+  $qSel = "select * from smf_categories ";
+  if ($update) { $qSel .= "where ow_id is null "; }
+  $qSel .= "order by id_cat";
 
   $result = mysqli_query($link, $qSel);
   echo $eol.$eol;
@@ -40,16 +41,18 @@ function get_section_id($link, $old_id) {
 }
 
 
-function import_groups ($link) //from boards
+function import_groups ($link,$update=false) //from boards
 {
   global $eol;
   
   $query = "TRUNCATE TABLE `ow_forum_group`";
-  $result = mysqli_query($link, $query);
+  if (!$update) { $result = mysqli_query($link, $query); }
+
+  $qsmf = "select * from smf_boards ";
+  if ($update) { $qsmf .= "where ow_id is null "; }
+  $qsmf .= "order by id_board";
+
   
-
-  $qsmf = "select * from smf_boards order by id_board";
-
   $result = mysqli_query($link, $qsmf);
   echo $eol.$eol;
   printf("*******smf_boards: %d rows.\n <br>", mysqli_num_rows($result));
@@ -104,16 +107,18 @@ function get_topic_descr($link, $smf_topic_id) {
 }
 
 
-function import_topics ($link) //from topics
+function import_topics ($link,$update=false) //from topics
 {
   global $eol;
   
   $query = "TRUNCATE TABLE `ow_forum_topic`";
-  $result = mysqli_query($link, $query);
+  if (!$update) { $result = mysqli_query($link, $query); }
+
+  $qsmf = "select * from smf_topics ";
+  if ($update) { $qsmf .= "where ow_id is null "; }
+  $qsmf .= "order by id_topic";
+
   
-
-  $qsmf = "select * from smf_topics order by id_topic";
-
   $result = mysqli_query($link, $qsmf);
   echo $eol.$eol;
   printf("*******smf_topics: %d rows.\n <br>", mysqli_num_rows($result));
@@ -152,16 +157,18 @@ function stripBBCode($text_to_search) {
 }
 
 
-function import_posts ($link) //from topics
+function import_posts ($link,$update=false) //from topics
 {
   global $eol;
   
   $query = "TRUNCATE TABLE `ow_forum_post`";
-  $result = mysqli_query($link, $query);
-  
+  if (!$update) { $result = mysqli_query($link, $query); }
  
-  $qsmf = "select * from smf_messages order by id_msg LIMIT 1000000";
+  $qsmf = "select * from smf_messages ";
+  if ($update) { $qsmf .= "where ow_id is null "; }
+  $qsmf .= "order by id_msg LIMIT 1000000 ";
 
+  
   $result = mysqli_query($link, $qsmf);
   echo $eol.$eol;
   printf("*******smf_messages: %d rows.\n <br>", mysqli_num_rows($result));
@@ -169,8 +176,6 @@ function import_posts ($link) //from topics
     $id=1;
 	while($row = mysqli_fetch_array($result))
   {
-  
- // echo "caut...".$row['id_topic'];
      $qIns = "INSERT INTO ow_forum_post (id, topicId, userId, text, createStamp) VALUES ";
 	 $userID = get_user_id($link, $row['id_member']);
 	 $qIns.= "(".$id.", ".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysqli_real_escape_string($link,bbcode_to_html($row['body']))."', ".$row['poster_time'].")";
