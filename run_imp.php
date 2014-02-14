@@ -14,7 +14,9 @@ if (!$link) {
     die('Could not connect: ' . mysql_error());
 }
 echo 'Connected successfully'."<br>";
-	mysqli_query($link,"SET NAMES utf8");
+
+  mysqli_query($link,"SET NAMES utf8");
+  
   update_users($link);
 
   
@@ -29,10 +31,13 @@ echo 'Connected successfully'."<br>";
   
     
     import_posts($link);  //smf_messages -> ow_forum_post
+  	
+	update_last_reply($link);
   
     import_likes($link);
+	
     import_last_read_post($link);
-	update_last_reply($link);
+
 	
   echo "done!";
 mysqli_close($link);
