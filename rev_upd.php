@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 include 'config.php';
 include 'sql.php';
 
-$link = mysqli_connect($SQL_HOST.":".$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
+$link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
 if (!$link) {
     die('Could not connect: ' . mysql_error());
