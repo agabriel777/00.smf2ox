@@ -99,7 +99,7 @@ function get_user_id($link, $old_id) {
 function get_topic_descr($link, $smf_topic_id) {
 global $eol;
 
-	$q = "select max(subject) subject from smf_messages where id_topic=".$smf_topic_id;
+	$q = "SELECT SUBJECT, MIN(m.id_msg) FROM smf_messages m  WHERE id_topic=".$smf_topic_id;
 	//echo $q;
 	$result = mysqli_query($link, $q);
 	$row = mysqli_fetch_array($result);
