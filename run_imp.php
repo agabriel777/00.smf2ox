@@ -11,7 +11,7 @@ include 'imp_after.php';
 include 'util.php';
 
 echo $SQL_HOST.$SQL_PORT;
-$link = mysqli_connect($SQL_HOST.":".$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
+$link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
 if (!$link) {
     die('Could not connect: ' . mysql_error());
