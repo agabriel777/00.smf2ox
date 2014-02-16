@@ -105,12 +105,10 @@ global $eol;
 	$row = mysqli_fetch_array($result);
 	$subject=mysqli_real_escape_string ($link, $row['subject']);
 	
-//echo $subject.$eol;
-	
-	$subject = $subject=="ZOB, EMIL si altii"?"Concerte diverse":$subject;
+//	$subject = $subject=="ZOB, EMIL si altii"?"Concerte diverse":$subject;
 	if (empty($subject)) {$subject="***blank***";}
 
-//echo $subject.$eol;
+
 	
 	return $subject;
 }
