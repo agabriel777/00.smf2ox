@@ -70,12 +70,13 @@ function import_groups ($link,$update=false) //from boards
 	 
 	 if ($row['name'] == "Sfatul Batranilor") {
 	   $isPrivate = "1";
-	   $roles = '["31"]';
+	   $roles = '\'["31"]\'';
 	 }
         
      $qIns = "INSERT INTO ow_forum_group (sectionId, name, description, `order`, entityId, isPrivate, roles) VALUES ";
 	 $qIns.= "('".get_section_id($link, $row['id_cat'])."', '".mysqli_real_escape_string($link,$row['name'])."', '".mysqli_real_escape_string($link,$row['description'])."', ".$row['board_order'].", NULL, ".$isPrivate.", ".$roles.")";
 	 
+	 echo $qIns.$eol;
 	 $id_ins = ins($link, $qIns);
 	 upd($link, 'smf_boards', 'id_board', $row['id_board'], $id_ins);
 	 $id++;
@@ -152,7 +153,7 @@ function import_topics ($link,$update=false) //from topics
     $group = get_group_id($link, $row['id_board']);
 	echo $group."->";
 	if ($row['id_topic'] == 894) {$group=21;};
-    echo $group;
+    echo $group.$eol;
 	
      $qIns = "INSERT INTO ow_forum_topic (groupId, userId, title, locked, sticky, temp, viewCount, lastPostId) VALUES ";
 	 $qIns.= "( ".$group.", ".get_user_id($link, $row['id_member_started']).", '".get_topic_descr($link, $row['id_topic'])."', ".$row['locked'].", ".$row['is_sticky'].", 0, ".$row['num_views'].", ".$row['id_last_msg'].")";

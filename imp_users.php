@@ -55,7 +55,7 @@ $chk = inUserDb($link, $row['member_name']);
 			
 			
 			$query.= "( '".$row['email_address2']."', '".$user_name."', '".$row['email_address']."', ".$row['date_registered'].", ".$row['last_login'].", '290365aadde35a97f11207ca7e4279cc', 1, ".$ip.")";
-//echo $query;
+
 			$result = mysqli_query($link, $query);
 
      		if ($result) { echo "ok"; }
@@ -63,7 +63,7 @@ $chk = inUserDb($link, $row['member_name']);
 	        echo $eol;
 						
 			$id = mysqli_insert_id($link);
-			//echo "ow_id=".$id.$eol;
+			
 
 			
 			if ($id!=0) {
@@ -74,9 +74,7 @@ $chk = inUserDb($link, $row['member_name']);
 			$q2.= "( 'realname', ".$id.", '".$row['real_name']."', 0, NULL)";
 			//echo $q2.$eol;
 			$result = mysqli_query($link, $q2);
-     		if ($result) { echo "ok"; }
-	    	else  echo "error ".mysqli_error($link);
-			echo $eol;
+     		if (!$result) { echo "error ".mysqli_error($link).$eol;};
 			
 
 			echo "sex...";
@@ -84,18 +82,14 @@ $chk = inUserDb($link, $row['member_name']);
 			$q2.= "( 'sex', ".$id.", '',".$row['gender'].", NULL)";
 			//echo $eol.$q2.$eol;
 			$result = mysqli_query($link, $q2);
-     		if ($result) { echo "ok"; }
-	    	else  echo "error ".$result;
-			echo $eol;
+     		if (!$result) { echo "error ".mysqli_error($link).$eol;};
 			
 			echo "birthday...";
 			$q2 = "INSERT INTO `ow_base_question_data` (questionName, userID, textValue, intValue, dateValue) VALUES";
 			$q2.= "( 'birthday', ".$id.", '', 0,'".$row['birthdate']."')";
 					//	echo $eol.$q2.$eol;
 			$result = mysqli_query($link, $q2);
-     		if ($result) { echo "ok"; }
-	    	else  echo "error ".$result;
-			echo $eol;
+     		if (!$result) { echo "error ".mysqli_error($link).$eol;};
 			}
 			
 		}
