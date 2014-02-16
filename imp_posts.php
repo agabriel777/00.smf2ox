@@ -60,8 +60,16 @@ function import_groups ($link,$update=false) //from boards
     $id=1;
 	while($row = mysqli_fetch_array($result))
   {
+     $isPrivate = "0";
+	 $roles = "NULL";
+	 
+	 if ($row['name'] == "Sfatul Batranilor") {
+	   $isPrivate = "1";
+	   $roles = '["31"]';
+	 }
+        
      $qIns = "INSERT INTO ow_forum_group (sectionId, name, description, `order`, entityId, isPrivate, roles) VALUES ";
-	 $qIns.= "('".get_section_id($link, $row['id_cat'])."', '".mysqli_real_escape_string($link,$row['name'])."', '".mysqli_real_escape_string($link,$row['description'])."', ".$row['board_order'].", NULL, 0, NULL)";
+	 $qIns.= "('".get_section_id($link, $row['id_cat'])."', '".mysqli_real_escape_string($link,$row['name'])."', '".mysqli_real_escape_string($link,$row['description'])."', ".$row['board_order'].", NULL, ".$isPrivate.", ".$roles.")";
 	 
 	 $id_ins = ins($link, $qIns);
 	 upd($link, 'smf_boards', 'id_board', $row['id_board'], $id_ins);
