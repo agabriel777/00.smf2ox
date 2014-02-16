@@ -18,7 +18,7 @@ $last_read_post1 .= 		"CROSS JOIN ow_base_user u ";
 $last_read_post1 .= 		"INNER JOIN ow_forum_post m ON m.topicid=t.id ";
 $last_read_post1 .= 		"GROUP BY t.id, u.id ";
 // where u.id=3 and t.id=424
-
+//omise topicurile din grupul 
 
 		$last_read_post2 = 		"UPDATE ow_forum_read_topic r INNER JOIN ( ";
 		$last_read_post2 .= 		"	SELECT t.ow_id AS tid, u.ow_id AS uid, m.ow_id AS pid ";
@@ -44,7 +44,7 @@ $last_read_post1 .= 		"GROUP BY t.id, u.id ";
 		$qReverse .="LEFT JOIN smf_topics t ON t.`ow_id` = p.`topicId` ";
 		$qReverse .="LEFT JOIN smf_members u ON u.`ow_id`=p.`userId` ";
 		$qReverse .="WHERE p.isFromImport=0 ";
-		$qReverse .="LIMIT 1";
+		$qReverse .="LIMIT 12";
 
 		$qReverse2 ="";
 		$qReverse2 .="UPDATE smf_topics t ";

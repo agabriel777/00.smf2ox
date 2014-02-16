@@ -22,8 +22,8 @@ function import_sections ($link,$update=false) //from categories
 	 $qIns.= "('".$row['name']."', ".$row['cat_order'].")";
 	 
 	 
-	 ins($link, $qIns);
-	 upd($link, 'smf_categories', 'id_cat', $row['id_cat'], $id);
+	 $id_ins = ins($link, $qIns);
+	 upd($link, 'smf_categories', 'id_cat', $row['id_cat'], $id_ins);
 	 $id++;
 	  if (! ($id % 10)) echo "$id..." ;
 	  if (! ($id % 1000)) echo "<br>";
@@ -63,8 +63,8 @@ function import_groups ($link,$update=false) //from boards
      $qIns = "INSERT INTO ow_forum_group (sectionId, name, description, `order`, entityId, isPrivate, roles) VALUES ";
 	 $qIns.= "('".get_section_id($link, $row['id_cat'])."', '".mysqli_real_escape_string($link,$row['name'])."', '".mysqli_real_escape_string($link,$row['description'])."', ".$row['board_order'].", NULL, 0, NULL)";
 	 //echo $qIns;
-	 ins($link, $qIns);
-	 upd($link, 'smf_boards', 'id_board', $row['id_board'], $id);
+	 $id_ins = ins($link, $qIns);
+	 upd($link, 'smf_boards', 'id_board', $row['id_board'], $id_ins);
 	 $id++;
 	 if (! ($id % 10)) echo "$id..." ;
 	 if (! ($id % 1000)) echo "<br>";
@@ -138,8 +138,8 @@ function import_topics ($link,$update=false) //from topics
      $qIns = "INSERT INTO ow_forum_topic (groupId, userId, title, locked, sticky, temp, viewCount, lastPostId) VALUES ";
 	 $qIns.= "( ".get_group_id($link, $row['id_board']).", ".get_user_id($link, $row['id_member_started']).", '".get_topic_descr($link, $row['id_topic'])."', ".$row['locked'].", ".$row['is_sticky'].", 0, ".$row['num_views'].", ".$row['id_last_msg'].")";
 	 
-	 ins($link, $qIns);
-	 upd($link, 'smf_topics', 'id_topic', $row['id_topic'], $id);
+	 $id_ins = ins($link, $qIns);
+	 upd($link, 'smf_topics', 'id_topic', $row['id_topic'], $id_ins);
 	 $id++;
 	 if (! ($id % 10)) echo "$id..." ;
 	 if (! ($id % 1000)) echo "<br>";
@@ -182,15 +182,15 @@ function import_posts ($link,$update=false) //from topics
   echo $eol.$eol;
   printf("*******smf_messages: %d rows.\n <br>", mysqli_num_rows($result));
   echo $eol;
-    $id=1;
+	$id=1;
 	while($row = mysqli_fetch_array($result))
   {
      $qIns = "INSERT INTO ow_forum_post (topicId, userId, text, createStamp, isFromImport) VALUES ";
 	 $userID = get_user_id($link, $row['id_member']);
 	 $qIns.= "(".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysqli_real_escape_string($link,bbcode_to_html($row['body']))."', ".$row['poster_time'].",1)";
 	 
-	 ins($link, $qIns);
-	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id);
+	 $id_ins = ins($link, $qIns);
+	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id_ins);
 	 
  
 	 

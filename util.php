@@ -5,8 +5,10 @@ function ins($link, $query)
 global $eol;
     
     $result = mysqli_query($link, $query);
+	$result = mysqli_insert_id($link);
   	if (!$result) {
 	   echo "E!: ".mysqli_error($link).$eol.$eol.$query.$eol;
+	   $result = -1;
 	}
 	return $result;
 }
