@@ -28,6 +28,11 @@ function import_sections ($link,$update=false) //from categories
 	  if (! ($id % 10)) echo "$id..." ;
 	  if (! ($id % 1000)) echo "<br>";
   }
+  
+  ins($link, "INSERT INTO `ow_forum_section` (`id`, `name`, `order`, `entity`, `isHidden`) VALUES (6, 'Groups', 5, 'groups', 1)");
+
+
+  
     echo "Sections Done</br>";
   mysqli_free_result($result);
 }
@@ -77,6 +82,9 @@ function import_groups ($link,$update=false) //from boards
 	 if (! ($id % 10)) echo "$id..." ;
 	 if (! ($id % 1000)) echo "<br>";
   }
+  
+  ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES (21, 6, 'PES', 'Pro Evolution Soccer', 1, 1, NULL, NULL);");
+  
   echo "Groups Done</br>";
   mysqli_free_result($result);
 }
@@ -141,8 +149,13 @@ function import_topics ($link,$update=false) //from topics
     $id=1;
 	while($row = mysqli_fetch_array($result))
   {
+    $group = get_group_id($link, $row['id_board']);
+	echo $group."->";
+	if ($row['id_topic'] == 894) {$group=21;};
+    echo $group;
+	
      $qIns = "INSERT INTO ow_forum_topic (groupId, userId, title, locked, sticky, temp, viewCount, lastPostId) VALUES ";
-	 $qIns.= "( ".get_group_id($link, $row['id_board']).", ".get_user_id($link, $row['id_member_started']).", '".get_topic_descr($link, $row['id_topic'])."', ".$row['locked'].", ".$row['is_sticky'].", 0, ".$row['num_views'].", ".$row['id_last_msg'].")";
+	 $qIns.= "( ".$group.", ".get_user_id($link, $row['id_member_started']).", '".get_topic_descr($link, $row['id_topic'])."', ".$row['locked'].", ".$row['is_sticky'].", 0, ".$row['num_views'].", ".$row['id_last_msg'].")";
 	 
 	 $id_ins = ins($link, $qIns);
 	 upd($link, 'smf_topics', 'id_topic', $row['id_topic'], $id_ins);
