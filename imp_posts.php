@@ -86,6 +86,8 @@ function import_groups ($link,$update=false) //from boards
   
   ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES (21, 6, 'PES', 'Pro Evolution Soccer', 1, 1, NULL, NULL);");
   
+    ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES (23, 6, 'Tenis', 'Campionatul de tenis vaspun.eu', 2, 3, NULL, NULL);");
+  
   echo "Groups Done</br>";
   mysqli_free_result($result);
 }
@@ -153,6 +155,7 @@ function import_topics ($link,$update=false) //from topics
     $group = get_group_id($link, $row['id_board']);
 	echo $group."->";
 	if ($row['id_topic'] == 894) {$group=21;};
+	if ($row['id_topic'] == 892) {$group=23;};
     echo $group.$eol;
 	
      $qIns = "INSERT INTO ow_forum_topic (groupId, userId, title, locked, sticky, temp, viewCount, lastPostId) VALUES ";
