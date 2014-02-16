@@ -9,7 +9,7 @@ $query = "delete from ow_base_user where 1=1 ".$USER_SKIP_QUERY;
 if ($update) { $query.=" and 1=0 ";} //sa nu stearga nimic
 $result = mysqli_query($link, $query);
 
-$query = "ALTER TABLE ow_base_user AUTO_INCREMENT = 7"
+$query = "ALTER TABLE ow_base_user AUTO_INCREMENT = 7";
 $result = mysqli_query($link, $query);
 
 $query = "DELETE FROM ow_base_question_data WHERE userid NOT IN(SELECT id FROM ow_base_user)";
