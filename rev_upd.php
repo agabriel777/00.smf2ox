@@ -21,6 +21,12 @@ echo 'Connected successfully'."<br>";
  if ($result) {echo "ok.";}
  else { echo "error! ".mysqli_error($link); }
 
+ echo "oxwall->smf - update isFromImport=1".$eol;
+ $result = mysqli_query($link, $qReverse1);
+ if ($result) {echo "ok.";}
+ else { echo "error! ".mysqli_error($link); }
+
+ 
  echo "oxwall->smf - update last message in topic".$eol;
  $result = mysqli_query($link, $qReverse2);
  if ($result) {echo "ok.";}

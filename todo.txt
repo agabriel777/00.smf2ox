@@ -1,2 +1,0 @@
---nu pune id_msg_modified = id pt rev_upd
---chestia cu topicuri ascunse
