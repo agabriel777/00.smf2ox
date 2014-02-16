@@ -188,14 +188,14 @@ function import_posts ($link,$update=false) //from topics
 	 $qIns.= "(".get_topic_id($link, $row['id_topic']).", ".$userID.", '".mysqli_real_escape_string($link,bbcode_to_html($row['body']))."', ".$row['poster_time'].",1)";
 	 
 	 $id_ins = ins($link, $qIns);
-	 echo "id=".$id_ins;
+//	 echo "id=".$id_ins;
 	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id_ins);
 	 
  
 	 
 	 $id++;
 	 if (! ($id % 100)) echo "$id..." ;
-	 if (! ($id % 10000)) echo "<br>";
+	 if (! ($id % 10000)) echo "<br>".$eol;
   }
       echo "Posts Done</br>";
   mysqli_free_result($result);
