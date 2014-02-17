@@ -1,15 +1,16 @@
 <?php
+include 'config.php';
 
 function ins($link, $query)
 {
 global $eol;
     
     $result = mysqli_query($link, $query);
-	$result = mysqli_insert_id($link);
   	if (!$result) {
-	   echo "E!: ".mysqli_error($link).$eol.$eol.$query.$eol;
+	   wlog("E!: ".mysqli_error($link).$eol.$query.$eol,true);
 	   $result = -1;
-	}
+	} 
+	else { $result = mysqli_insert_id($link); }
 	return $result;
 }
 
@@ -18,16 +19,27 @@ function upd($link, $table_name, $id_name, $old_id, $new_id)
 {
 global $eol;
 $query = "update `".$table_name."` set ow_id=".$new_id." where `".$id_name."` = ".$old_id;
-    //echo $query.$eol;
     $result = mysqli_query($link, $query);
   	if (!$result) {
-	   echo "E!: ".mysqli_error($link).$eol.$eol;
+	   wlog("E!: ".mysqli_error($link),true);
 	}
 	return $result;
 }
 
 
+function wlog($logstr, $onScreen = false) {
+   global $LOG_FILE_NAME;
+   global $eol;
 
+  $filename = $LOG_FILE_NAME;
+  $lfile = fopen($filename,'a+');
+  $logstr = PHP_EOL."[".date("Ymd H:i:s").'] '.$logstr.PHP_EOL;
+  fputs($lfile,$logstr);
+  fclose($lfile);
+  if ($onScreen) {
+    echo $logstr.$eol;
+  }
+}
 
 
 
