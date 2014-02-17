@@ -33,7 +33,7 @@ function wlog($logstr, $onScreen = false) {
 
   $filename = $LOG_FILE_NAME;
   $lfile = fopen($filename,'a+');
-  $logstr = PHP_EOL."[".date("Ymd H:i:s").'] '.$logstr.PHP_EOL;
+  $logstr = PHP_EOL."[".date("Ymd H:i:s").'] '.$logstr;
   fputs($lfile,$logstr);
   fclose($lfile);
   if ($onScreen) {

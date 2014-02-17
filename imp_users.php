@@ -71,23 +71,23 @@ function importUser($link, $row)
 			if ($id!=0) {
    			  upd($link, 'smf_members', 'id_member' , $row['id_member'], $id);
 			
-				wlog("real_name...");
+				//wlog("real_name...");
 				$q2 = "INSERT INTO `ow_base_question_data` (questionName, userID, textValue, intValue, dateValue) VALUES";
 				$q2.= "( 'realname', ".$id.", '".$row['real_name']."', 0, NULL)";
 				ins($link, $q2);
 		
 
-				wlog("sex...");
+			//	wlog("sex...");
 				$q2 = "INSERT INTO `ow_base_question_data` (questionName, userID, textValue, intValue, dateValue) VALUES";
 				$q2.= "( 'sex', ".$id.", '',".$row['gender'].", NULL)";
 				ins($link, $q2);
 				
-				wlog("birthday...");
+		//		wlog("birthday...");
 				$q2 = "INSERT INTO `ow_base_question_data` (questionName, userID, textValue, intValue, dateValue) VALUES";
 				$q2.= "( 'birthday', ".$id.", '', 0,'".$row['birthdate']."')";
 				ins($link, $q2);
 
-				wlog("roles...");
+			//	wlog("roles...");
 				$q2 = "INSERT INTO ow_base_authorization_user_role (userid, roleid) VALUES (".$id.", 12)";			
 				ins($link, $q2);				
 			}

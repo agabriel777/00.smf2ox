@@ -41,15 +41,15 @@ include 'util.php';
 		    wlog("import mesaj cu OW id=".$row['id'],true);
 			$qReverse ="INSERT INTO `vaspun`.`smf_messages` (`id_topic`,`id_board`,`poster_time`,`id_member`,`id_msg_modified`, `subject`, `poster_name`, `poster_email`, `poster_ip`,`smileys_enabled`, `modified_time`,`modified_name`,`body`,`icon`,`approved`,`gpbp_score`,`ow_id`) VALUES (";
 		
-			$qReverse .=$row['id_topic'].", ".$row['id_board'].", ".$row['createStamp'].", ".$row['id_member'].", 0, '".$row['subject']."', '".$row['member_name']."', '".$row['member_name']."', '".$row['email_address']."', 'oxwall', 1, 0, '', '".$row['text']."', 'xx', 1, 0, ".$row['id'].")";
+			$qReverse .=$row['id_topic'].", ".$row['id_board'].", ".$row['createStamp'].", ".$row['id_member'].", 0, '".$row['subject']."', '".$row['member_name']."', '".$row['email_address']."', 'oxwall', 1, 0, '', '".mysqli_real_escape_string($link, $row['text'])."', 'xx', 1, 0, ".$row['id'].")";
 		
 			$ins_id = ins($link,$qReverse);
 			if ($ins_id!=-1) {
 			    wlog("mesaj inserat cu SMF id=".$ins_id,true);
-				$q = "update smf_messages set id_msg_modified = id_msg where id = ".$ins_id;
+				$q = "update smf_messages set id_msg_modified = id_msg where id_msg = ".$ins_id;
 				ins($link,$q);
 				
-				$q =  "UPDATE ow_forum_post set isFromImport=1 where id = ".$row['id'];
+				$q =  "UPDATE ow_forum_post set isFromImport=2 where id = ".$row['id'];
 				ins($link, $q);
 			}
  

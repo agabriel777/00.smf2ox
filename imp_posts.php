@@ -151,7 +151,7 @@ function import_topics ($link,$update=false) //from topics
 	while($row = mysqli_fetch_array($result))
   {
     $group = get_group_id($link, $row['id_board']);
-	//echo $group."->";
+//	echo $group."->";
 	if ($row['id_topic'] == 894) {$group=21;};
 	if ($row['id_topic'] == 892) {$group=23;};
 	if ($row['id_board'] == 16) {$group=24;};
