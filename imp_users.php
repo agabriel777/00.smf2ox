@@ -3,36 +3,37 @@
 function update_users($link, $update = false)
 {
 
-$query = "delete from ow_base_user where untouchables=0 ";
-if ($update) { $query.=" and 1=0 ";} //sa nu stearga nimic
-ins($link, $query);
+	$query = "delete from ow_base_user where untouchables=0 ";
+	if ($update) { $query.=" and 1=0 ";} //sa nu stearga nimic
+	ins($link, $query);
 
-$query = "Select max(id) maxid from ow_base_user";
+	if (!$update) {
+		$query = "Select max(id) maxid from ow_base_user";
 
-$result = mysqli_query($link, $query);
-$row = mysqli_fetch_array($result);
-$maxid = $row['maxid'];
-wlog("maxid=".$maxid,true);
- 
-$query = "UPDATE ow_base_user set id=7 where username = 'alecu'";
-ins($link, $query);
+		$result = mysqli_query($link, $query);
+		$row = mysqli_fetch_array($result);
+		$maxid = $row['maxid'];
+		wlog("maxid=".$maxid,true);
+		 
+		$query = "UPDATE ow_base_user set id=7 where username = 'alecu'";
+		ins($link, $query);
 
-$query = "ALTER TABLE ow_base_user AUTO_INCREMENT = ".$maxid;
-ins($link, $query);
+		$query = "ALTER TABLE ow_base_user AUTO_INCREMENT = ".$maxid;
+		ins($link, $query);
 
-$query = "DELETE FROM ow_base_question_data WHERE userid NOT IN (SELECT id FROM ow_base_user)";
-ins($link, $query);
+		$query = "DELETE FROM ow_base_question_data WHERE userid NOT IN (SELECT id FROM ow_base_user)";
+		ins($link, $query);
 
-$query = "DELETE FROM ow_base_authorization_user_role WHERE userid NOT IN (SELECT id FROM ow_base_user)";
-ins($link, $query);
-
+		$query = "DELETE FROM ow_base_authorization_user_role WHERE userid NOT IN (SELECT id FROM ow_base_user)";
+		ins($link, $query);
+	}
 
 	$query = "SELECT CASE WHEN email_address='' THEN member_name ELSE email_address END AS email_address2, a.* FROM smf_members a ";
 	if ($update) { $query .= "where a.ow_id is null ";} 
 	$query .= "ORDER BY id_member";
 
     $result = mysqli_query($link, $query);
-	wlog($query,true);
+	//wlog($query,true);
 
     wlog(sprintf ("*******smf_members: %d rows.\n", mysqli_num_rows($result)),true);
 	while($row = mysqli_fetch_array($result)) {

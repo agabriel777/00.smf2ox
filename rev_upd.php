@@ -8,25 +8,29 @@ error_reporting(E_ALL);
 
 include 'config.php';
 include 'sql.php';
+include 'util.php';
 
 	$link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
 	if (!$link) {
 		die('Could not connect: ' . mysql_error());
 	}
-	wlog("Connected successfully",true);
+	wlog("Connected successfully", true);
   
 	mysqli_query($link,"SET NAMES utf8");
 
 	wlog("oxwall->smf - import", true);
+/*
 	$result = mysqli_query($link, $qReverse);
 	if ($result) {echo "ok.";}
 	else { echo "error! ".mysqli_error($link); }
+
 
 	echo "oxwall->smf - update isFromImport=1".$eol;
 	$result = mysqli_query($link, $qReverse1);
 	if ($result) {echo "ok.";}
 	else { echo "error! ".mysqli_error($link); }
+*/
 
     $result = mysqli_query($link, $qOW);
 
@@ -42,7 +46,7 @@ include 'sql.php';
 			$ins_id = ins($link,$qReverse);
 			if ($ins_id!=-1) {
 			    wlog("mesaj inserat cu SMF id=".$ins_id,true);
-				$q = "update smf_messages set id_msg_modified = id_msg where id = "$ins_id;
+				$q = "update smf_messages set id_msg_modified = id_msg where id = ".$ins_id;
 				ins($link,$q);
 				
 				$q =  "UPDATE ow_forum_post set isFromImport=1 where id = ".$row['id'];

@@ -29,8 +29,9 @@ function import_sections ($link,$update=false) //from categories
   }
   
   //manual add
-  ins($link, "INSERT INTO `ow_forum_section` (`id`, `name`, `order`, `entity`, `isHidden`) VALUES (6, 'Groups', 5, 'groups', 1)");
-  
+  if (!$update) {
+    ins($link, "INSERT INTO `ow_forum_section` (`id`, `name`, `order`, `entity`, `isHidden`) VALUES (6, 'Groups', 5, 'groups', 1)");
+  }
   wlog("Sections Done</br>");
   mysqli_free_result($result);
 }
@@ -82,14 +83,16 @@ function import_groups ($link,$update=false) //from boards
 	 if (! ($id % 1000)) echo "<br>";
   }
   
-  ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES (21, 6, 'PES', 'Pro Evolution Soccer', 1, 1, NULL, NULL);");
-  
-  ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES (23, 6, 'Tenis', 'Campionatul de tenis vaspun.eu', 2, 3, NULL, NULL);");
-  
+    if (!$update) {
+	  ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES (21, 6, 'PES', 'Pro Evolution Soccer', 1, 1, NULL, NULL);");
+	  
+	  ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES (23, 6, 'Tenis', 'Campionatul de tenis vaspun.eu', 2, 3, NULL, NULL);");
+	  
 
-  ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES 
-  (24, 6, 'Le sposine', 'Maritisuri<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span>', 3, 4, NULL, NULL)");
-  
+	  ins($link, "INSERT INTO `ow_forum_group` (`id`, `sectionId`, `name`, `description`, `order`, `entityId`, `isPrivate`, `roles`) VALUES 
+	  (24, 6, 'Le sposine', 'Maritisuri<span class=\"Apple-tab-span\" style=\"white-space:pre\"></span>', 3, 4, NULL, NULL)");
+    }
+	
   wlog("Groups Done</br>");
   mysqli_free_result($result);
 }
