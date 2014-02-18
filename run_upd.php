@@ -11,7 +11,7 @@ include 'imp_users.php';
 include 'imp_posts.php';
 include 'imp_after.php';
 include 'util.php';
-
+wlog($eol."***************************".$eol);
 $link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
 if (!$link) {

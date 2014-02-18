@@ -216,6 +216,7 @@ function import_posts ($link,$update=false) //from topics
 	 if (! ($id % 100)) echo "$id..." ;
 	 if (! ($id % 10000)) echo "<br>".$eol;
 	 flush();
+	 ob_flush();
   }
       wlog("Posts Done</br>",true);
   mysqli_free_result($result);

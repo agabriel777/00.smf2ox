@@ -9,12 +9,13 @@ error_reporting(E_ALL);
 include 'config.php';
 include 'sql.php';
 include 'util.php';
-
+wlog($eol."***************************".$eol);
 	$link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
 	if (!$link) {
 		die('Could not connect: ' . mysql_error());
 	}
+
 	wlog("Connected successfully", true);
   
 	mysqli_query($link,"SET NAMES utf8");

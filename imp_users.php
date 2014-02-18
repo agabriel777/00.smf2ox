@@ -8,16 +8,21 @@ function update_users($link, $update = false)
 	ins($link, $query);
 
 	if (!$update) {
-		$query = "Select max(id) maxid from ow_base_user";
 
+		$query = "UPDATE ow_base_user set id=7 where username = 'alecu'";
+		ins($link, $query);
+
+		$query = "UPDATE ow_base_user set id=8 where username = 'marcel'";
+		ins($link, $query);
+
+		
+	    $query = "Select max(id) maxid from ow_base_user";
 		$result = mysqli_query($link, $query);
 		$row = mysqli_fetch_array($result);
 		$maxid = $row['maxid'];
 		wlog("maxid=".$maxid,true);
 		 
-		$query = "UPDATE ow_base_user set id=7 where username = 'alecu'";
-		ins($link, $query);
-
+		
 		$query = "ALTER TABLE ow_base_user AUTO_INCREMENT = ".$maxid;
 		ins($link, $query);
 
