@@ -10,14 +10,16 @@ global $q_update_last_reply;
 
 function import_likes($link,$update=false) {//import thanks
 global $qLikes;
-	 
-  $query = "TRUNCATE TABLE `ow_newsfeed_like`";
-  ins($link, $query);
 
-        wlog("Import likes...",true);
-        ins($link, $qLikes);
+  if (!$update) {	 
+     $query = "TRUNCATE TABLE `ow_newsfeed_like` where entityType='forum-post'";
+     ins($link, $query);
+
+	 wlog("Import likes...",true);
+     ins($link, $qLikes);
+  }
+		
 }
-
 
 
 function import_last_read_post ($link, $update=false) {

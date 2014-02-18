@@ -101,9 +101,11 @@ function importUser($link, $row)
 		else
 		{
 		    wlog($row['member_name'].' - UPDATE...');
-    		$query = "UPDATE `ow_base_user` SET `joinStamp` = ".$row['date_registered'].", `activityStamp` = ".$row['last_login']." WHERE `username` = '".$row['member_name']."'";
-			 ins($link, $query);
-			 upd($link, 'smf_members', 'id_member' , $row['id_member'], $chk);
+			if ($row['member_name']=="mihaelab777")  $username="MihaSan";
+			
+    		$query = "UPDATE `ow_base_user` SET `joinStamp` = ".$row['date_registered'].", `activityStamp` = ".$row['last_login']." WHERE `username` = '".$username."'";
+			ins($link, $query);
+			upd($link, 'smf_members', 'id_member' , $row['id_member'], $chk);
 			 
 		}	
 		
