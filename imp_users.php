@@ -107,6 +107,11 @@ function importUser($link, $row)
     		$query = "UPDATE `ow_base_user` SET `joinStamp` = ".$row['date_registered'].", `activityStamp` = ".$row['last_login']." WHERE `username` = '".$username."'";
 			ins($link, $query);
 			upd($link, 'smf_members', 'id_member' , $row['id_member'], $chk);
+			
+			//	wlog("roles...");
+    		$q2 = "INSERT INTO ow_base_authorization_user_role (userid, roleid) VALUES (".$chk.", 12)";			
+	    	ins($link, $q2);				
+
 			 
 		}	
 		
