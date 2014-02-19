@@ -113,7 +113,7 @@ function bbcode_to_html($bbtext){
 	"/&lt;blockquote&gt;&lt;cite&gt;Posted By: (.*?)&lt;\/cite&gt;(.*?)&lt;\/blockquote&gt;/i" => "<blockquote class=\"ow_quote\"><span class=\"ow_quote_header\"><span class=\"ow_author\">Quote from <b>$1</b></span></span><span class=\"ow_quote_cont_wrap\"><span class=\"ow_quote_cont\">$2</span></span></blockquote>",	
     "/\[url](.*?)\[\/url\]/i" => "<a href=\"http://$1\" title=\"$1\">$1</a>",
     "/\[url=(.*?)\](.*?)\[\/url\]/i" => "<a href=\"$1\" title=\"$1\">$2</a>",
-	"/\[color=white\](.*?)\[\/color\]/i" => "<span style=\"color:black\">$1</span>", 
+	//"/\[color=white\](.*?)\[\/color\]/i" => "<span style=\"color:black\">$1</span>", 
 	"/\[color=(.*?)\](.*?)\[\/color\]/i" => "<span style=\"color:$1\">$2</span>", 
     "/\[email=(.*?)\](.*?)\[\/email\]/i" => "<a href=\"mailto:$1\">$2</a>",
     "/\[mail=(.*?)\](.*?)\[\/mail\]/i" => "<a href=\"mailto:$1\">$2</a>",

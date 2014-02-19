@@ -102,6 +102,7 @@ function importUser($link, $row)
 		{
 		    wlog($row['member_name'].' - UPDATE...');
 			if ($row['member_name']=="mihaelab777")  $username="MihaSan";
+			else $username=$row['member_name'];
 			
     		$query = "UPDATE `ow_base_user` SET `joinStamp` = ".$row['date_registered'].", `activityStamp` = ".$row['last_login']." WHERE `username` = '".$username."'";
 			ins($link, $query);

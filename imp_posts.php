@@ -25,7 +25,7 @@ function import_sections ($link,$update=false) //from categories
 	 upd($link, 'smf_categories', 'id_cat', $row['id_cat'], $id_ins);
 	  $id++;
 	  if (! ($id % 10)) echo "$id..." ;
-	  if (! ($id % 1000)) echo "<br>";
+	  if (! ($id % 300)) echo "<br>";
   }
   
   //manual add
@@ -164,7 +164,7 @@ function import_topics ($link,$update=false) //from topics
 	 upd($link, 'smf_topics', 'id_topic', $row['id_topic'], $id_ins);
 	 $id++;
 	 if (! ($id % 10)) echo "$id..." ;
-	 if (! ($id % 1000)) echo "<br>";
+	 if (! ($id % 300)) echo "<br>";
   }
     wlog("Topics Done</br>",true);
   mysqli_free_result($result);
@@ -214,7 +214,7 @@ function import_posts ($link,$update=false) //from topics
 	 
 	 $id++;
 	 if (! ($id % 100)) echo "$id..." ;
-	 if (! ($id % 10000)) echo "<br>".$eol;
+	 if (! ($id % 2500)) echo "<br>".$eol;
 	 flush();
 	 ob_flush();
   }

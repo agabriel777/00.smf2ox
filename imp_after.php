@@ -12,7 +12,7 @@ function import_likes($link,$update=false) {//import thanks
 global $qLikes;
 
   if (!$update) {	 
-     $query = "TRUNCATE TABLE `ow_newsfeed_like` where entityType='forum-post'";
+     $query = "TRUNCATE TABLE `ow_newsfeed_like`"; // where entityType='forum-post'";
      ins($link, $query);
 
 	 wlog("Import likes...",true);
