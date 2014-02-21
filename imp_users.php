@@ -94,7 +94,7 @@ function importUser($link, $row)
 
 			//	wlog("roles...");
 				$q2 = "INSERT INTO ow_base_authorization_user_role (userid, roleid) VALUES (".$id.", 12)";			
-				ins($link, $q2);				
+				ins($link, $q2);		
 			}
 			
 		}
@@ -110,7 +110,7 @@ function importUser($link, $row)
 			
 			//	wlog("roles...");
     		$q2 = "INSERT INTO ow_base_authorization_user_role (userid, roleid) VALUES (".$chk.", 12)";			
-	    	ins($link, $q2);				
+	    	//ins($link, $q2);				 		nu cred ca mai e nevoie pentru cei updatati
 
 			 
 		}	
