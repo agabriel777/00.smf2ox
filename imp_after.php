@@ -66,7 +66,7 @@ ORDER BY u.ow_id, t.ow_id DESC";
 		}
 
 		 if ($insOW) {
-		   wlog("insert in OW (T=".$row['owTid'].", U=".$row['owUid'].", P=".$row['owPid']")",true);
+		   wlog("insert in OW (T=".$row['owTid'].", U=".$row['owUid'].", P=".$row['owPid'].")",true);
 		   $q = "INSERT into ow_forum_read_topic (topicID, userId, postId) values (".$row['owTid'].", ".$row['owUid'].", ".$row['owPid'].")";
 		   ins($link,$q);
 		 
