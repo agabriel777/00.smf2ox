@@ -22,6 +22,7 @@ if (!$link) {
 
   mysqli_query($link,"SET NAMES utf8");
 
+  
   update_users($link, true);
   
   import_sections ($link, true); //smf_categories -> ow_forum_section
@@ -32,15 +33,16 @@ if (!$link) {
   
   import_posts($link, true);  //smf_messages -> ow_forum_post
 
-  ow2smf($link);  
+  ow2smf($link);  //ow->smf posts
+/**********************************************************************/
+ //  import_likes($link, true);
 
-  update_last_reply($link, true);
+  // update_last_reply($link, true);
+
+  //import_last_read_post($link, true);
+  //import_last_read_post_the_easy_way($link, true);
   
-  import_likes($link, true);
-	
-  import_last_read_post($link, true);
-
   mysqli_close($link);
   
-  wlog("All done!",true);
+  wlog("Sync done!",true);
 ?>

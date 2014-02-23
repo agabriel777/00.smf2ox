@@ -37,7 +37,9 @@ wlog($eol."***************************".$eol);
   
   import_likes($link);
 	
-  import_last_read_post($link);
+  // import_last_read_post($link);
+
+   import_last_read_post_the_easy_way($link);
   
   mysqli_close($link);
 

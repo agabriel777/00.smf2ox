@@ -191,6 +191,9 @@ function stripBBCode($text_to_search) {
 function import_posts ($link,$update=false) //from topics
 {
   global $eol;
+
+  $query = "TRUNCATE TABLE `ow_forum_edit_post`";
+  if (!$update) { $result = mysqli_query($link, $query); }
   
   $query = "TRUNCATE TABLE `ow_forum_post`";
   if (!$update) { $result = mysqli_query($link, $query); }
