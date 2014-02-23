@@ -11,16 +11,19 @@ global $eol;
 	   wlog("E!: ".mysqli_error($link).$eol.$query.$eol,true);
 	} 
 	else { 
+	
 	   $row = mysqli_fetch_array($result);
 	   if (!isset($row['owPid'])) { //nu am linie, caut in board
-	     $ql="SELECT MAX(m.id_msg) FROM smf_messages m
+ 		 $ql="SELECT ow_id from smf_messages where id_msg=( SELECT MAX(m.id_msg) FROM smf_messages m
               INNER JOIN smf_topics t ON t.id_topic=m.id_topic
                INNER JOIN smf_log_mark_read mr ON mr.id_board=t.id_board 
 			                                   AND mr.id_member = (SELECT id_member FROM smf_members WHERE ow_id=".$uid.")
-               WHERE t.ow_id=".$tid." AND m.id_msg<=mr.id_msg";
+               WHERE t.ow_id=".$tid." AND m.id_msg<=mr.id_msg)";
 		 $result = getValue($link, $ql);
-	   } else $result = $row['owPid'];//iau ce rezulta din view
+  
+	   } else {$result = $row['owPid'];}//iau ce rezulta din view}
 	}
+	
 	return $result;
 }	
 
@@ -41,6 +44,18 @@ global $eol;
 }	
 		
 		
+function upd_log($link, $query)
+{
+global $eol;
+    
+    $result = mysqli_query($link, $query);
+  	if (!$result) {
+	   wlog("E!: ".mysqli_error($link).$eol.$query.$eol,true);
+	   $result = -1;
+	} 
+	else { $result = mysqli_affected_rows($link); }
+	return $result;
+}	
 
 
 
@@ -118,7 +133,7 @@ function bbcode_to_html($bbtext){
     '[italic]' => '<span style="font-weight:bold;">','[/italic]' => '</span>',
     '[underline]' => '<span style="text-decoration:underline;">','[/underline]' => '</span>',
     '[b]' => '<span style="font-weight:bold;">','[/b]' => '</span>',
-    '[i]' => '<span style="font-style:italic;">','[/i]' => '</span>',
+    '[i]' => '<span style="font-weight:bold;">','[/i]' => '</span>',
     '[u]' => '<span style="text-decoration:underline;">','[/u]' => '</span>',
     '[break]' => '<br>',
     '[br]' => '<br>',
@@ -148,13 +163,13 @@ function bbcode_to_html($bbtext){
     "/\[url=https?:\/\/www\.youtube\.com\/watch\?v=(.*?)\](.*?)\[\/url\]/i" => "<iframe width=\"420\" height=\"315\" src=\"//www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>", // youtube 
 	"/\https:\/\/www\.youtube\.com\/watch\?v=(.*?)\](.*?)/i" => "<iframe width=\"420\" height=\"315\" src=\"//www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>", //youtube
 	"/\[youtube:(.*?)\]http:\/\/www\.youtube\.com\/watch\?v=(.*?)\[\/youtube(.*?)\]/i" => "<iframe width=\"420\" height=\"315\" src=\"//www.youtube.com/embed/$2\" frameborder=\"0\" allowfullscreen></iframe>", //youtube
-	"/\[imdb:(.*?)\](.*?)\[\/imdb:(.*?)\]/i" => "<a href=\"http://www.imdb.com/title/tt$2\">IMDB Link</a><br>", //imdb
-	"/\[imdb\](.*?),(.*?)\[\/imdb\]/i" => "<a href=\"http://www.imdb.com/title/tt$1\">IMDB Link</a><br><iframe width=\"420\" height=\"315\" src=\"//www.youtube.com/embed/$2\" frameborder=\"0\" allowfullscreen></iframe>", //imdb
+	"/\[imdb:(.*?)\](.*?)\[\/imdb:(.*?)\]/i" => "<a href=\"http://www.imdb.com/title/tt$2\ target=\"_blank\">IMDB Link</a><br>", //imdb
+	"/\[imdb\](.*?),(.*?)\[\/imdb\]/i" => "<a href=\"http://www.imdb.com/title/tt$1\" target=\"_blank\">IMDB Link</a><br><iframe width=\"420\" height=\"315\" src=\"//www.youtube.com/embed/$2\" frameborder=\"0\" allowfullscreen></iframe>", //imdb
     "/\[quote\]\[cite\] (.*?):\[\/cite\](.*)\[\/quote\]/m" => "<blockquote class=\"ow_quote\"><span class=\"ow_quote_header\"><span class=\"ow_author\">Quote from <b>$1</b></span></span><span class=\"ow_quote_cont_wrap\"><span class=\"ow_quote_cont\">$2</span></span></blockquote>",	
 	"/\[quote author=\"(.*?)\"\](.*?)\[\/quote\]/m" => "<blockquote class=\"ow_quote\"><span class=\"ow_quote_header\"><span class=\"ow_author\">Quote from <b>$1</b></span></span><span class=\"ow_quote_cont_wrap\"><span class=\"ow_quote_cont\">$2</span></span></blockquote>",
 	"/\[quote author=(.*?) link=(.*?)\](.*?)\[\/quote\]/m" => "<blockquote class=\"ow_quote\"><span class=\"ow_quote_header\"><span class=\"ow_author\">Quote from <b>$1</b></span></span><span class=\"ow_quote_cont_wrap\"><span class=\"ow_quote_cont\">$3</span></span></blockquote>",	
 	"/&lt;blockquote&gt;&lt;cite&gt;Posted By: (.*?)&lt;\/cite&gt;(.*?)&lt;\/blockquote&gt;/i" => "<blockquote class=\"ow_quote\"><span class=\"ow_quote_header\"><span class=\"ow_author\">Quote from <b>$1</b></span></span><span class=\"ow_quote_cont_wrap\"><span class=\"ow_quote_cont\">$2</span></span></blockquote>",	
-    "/\[url](.*?)\[\/url\]/i" => "<a href=\"http://$1\" title=\"$1\">$1</a>",
+    "/\[url](.*?)\[\/url\]/i" => "<a href=\"http://$1\" title=\"$1\" target=\"_blank\">$1</a>",
     "/\[url=(.*?)\](.*?)\[\/url\]/i" => "<a href=\"$1\" title=\"$1\">$2</a>",
 	//"/\[color=white\](.*?)\[\/color\]/i" => "<span style=\"color:black\">$1</span>", 
 	"/\[color=(.*?)\](.*?)\[\/color\]/i" => "<span style=\"color:$1\">$2</span>", 

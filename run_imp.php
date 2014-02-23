@@ -23,6 +23,7 @@ wlog($eol."***************************".$eol);
 
   mysqli_query($link,"SET NAMES utf8");
   
+
   update_users($link);
   
   import_sections ($link); //smf_categories -> ow_forum_section
@@ -36,10 +37,10 @@ wlog($eol."***************************".$eol);
   update_last_reply($link);
   
   import_likes($link);
-	
-  // import_last_read_post($link);
 
-   import_last_read_post_the_easy_way($link);
+   //import_last_read_post_the_easy_way($link);
+  
+  import_last_read_post($link);
   
   mysqli_close($link);
 

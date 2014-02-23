@@ -35,109 +35,6 @@ $qLikes = "INSERT INTO `ow_newsfeed_like` (`entityType`,`entityId`,`userId`,`tim
 }
 
 
-function import_last_read_post ($link, $update=false) {
-
-/* v1
-$last_read_cross ="insert into ow_forum_read_topic (topicId, userId, postId) SELECT t.id AS tid, u.id AS uid, MAX(m.id) pid FROM ow_forum_topic t CROSS JOIN ow_base_user u INNER JOIN ow_forum_post m ON m.topicid=t.id GROUP BY t.id, u.id ";
-
-
-$last_read_post ="UPDATE ow_forum_read_topic r 
-                   INNER JOIN (SELECT t.ow_id AS tid, u.ow_id AS uid, m.ow_id AS pid  FROM 
-								( SELECT  l.id_topic AS tid, l.id_member AS uid, 
-										(SELECT MAX(id_msg) FROM smf_messages m2 WHERE m2.id_msg<=l.id_msg AND m2.id_topic=l.`id_topic`) AS pid 
-										FROM smf_log_topics l 
-								) AS x 
-								INNER JOIN smf_messages m ON m.`id_msg`=x.pid 
-								INNER JOIN smf_topics t ON t.`id_topic` = x.tid 
-								INNER JOIN smf_members u ON u.`id_member`=x.uid 
-								WHERE m.ow_id IS NOT NULL 
-							) z ON z.tid=r.`topicId` AND z.uid=r.`userId` SET r.`postId`=z.pid WHERE r.`topicId`=z.tid  AND r.`userId`=z.uid ";
-
-	*/						
-
-
-$last_read_cross ="  insert into ow_forum_read_topic (topicId, userId, postId) 
-SELECT t.ow_id, u.ow_id, m.ow_id FROM (
-SELECT IFNULL(x.nu_au_in_log, (SELECT MAX(id_msg) FROM smf_messages s3 WHERE s3.id_topic=x.tid)) pid, x.* FROM (
-SELECT IFNULL(z.id_msg_corect, (SELECT MAX(id_msg) FROM smf_messages s2 WHERE s2.id_topic=z.tid AND s2.id_msg<=z.id_rezultat_din_board)) nu_au_in_log, z.* FROM (
-SELECT t.id_board AS bid, t.id_topic AS tid, u.id_member AS uid, lt.id_msg is_msg_log, m.id_msg, 
-IFNULL(m.id_msg,(SELECT MAX(`m2`.`id_msg`) FROM `smf_messages` `m2` WHERE ((`m2`.`id_topic` = `lt`.`id_topic`) AND (`m2`.`id_msg` < `lt`.`id_msg`)))) AS id_msg_corect,
-mr.id_msg id_rezultat_din_board
-FROM smf_topics t 
-CROSS JOIN smf_members u 
-LEFT JOIN smf_log_topics lt ON lt.id_topic=t.id_topic AND lt.id_member=u.id_member
-LEFT JOIN smf_messages m ON m.id_msg = lt.id_msg
-LEFT JOIN smf_log_mark_read mr ON mr.id_member=u.id_member AND mr.id_board=t.id_board
-WHERE u.id_member=22
-) z
-) x
-) y
-INNER JOIN smf_messages m ON m.`id_msg`=y.pid 
-INNER JOIN smf_topics t ON t.`id_topic` = y.tid 
-INNER JOIN smf_members u ON u.`id_member`=y.uid 
-";
-
-
-
-    wlog("Import last_read_post...",true);
-    if (!$update) {
-      //doar la importu mare
-      wlog('truncate table',true);
-	  $query = "TRUNCATE TABLE `ow_forum_read_topic`";
-      ins($link, $query);
-	   
-      wlog('cross join',true);	   
-      ins($link, $last_read_cross);
-   
-	}
-	else {//update
-	
-	  // upd ow, upd smf
-		$query="  SELECT * FROM ow_forum_read_topic ow LEFT JOIN vw_sync_id v ON ow.userid=v.owuid AND ow.topicid=v.owtid WHERE 1=1 AND v.owpid<IFNULL(ow.postid,99999) ";//unde am id (calculat) mai mic decat ce e in smf care initial avea maxim din fiecare topic;
-//E situatia in care nu am nimic in smf_log_topic, pe topicu respectiv, desi am mesaj nou acolo. 
-		
-		$result = mysqli_query($link, $query);
-		if ($result) {
-			wlog(sprintf ("*******smf_log_topics: %d rows.\n", mysqli_num_rows($result)),true);
-			while($row = mysqli_fetch_array($result)) {//insert nu fac pt ca am deja toate liniile
-				  wlog("update in OW (T=".$row['owTid'].", U=".$row['owUid'].", P=".$row['owPid'].")",false);
-				  $q = "UPDATE ow_forum_read_topic set postId = ".$row['owPid']." where userId=".$row['owUid']." and topicId = ".$row['owTid'];
-				  ins($link,$q);
-				  
-				  flush();
-				 ob_flush();
-			}
-			mysqli_free_result($result);
-		}	
-	
-	
-	}
-}			  
-
-/*
-
-		$insOW = false;
-			if (!isset($row['postid'])) {//nu exista linie
-		   wlog("insert in OW (T=".$row['owTid'].", U=".$row['owUid'].", P=".$row['owPid'].")",false);
-		   $q = "INSERT into ow_forum_read_topic (topicID, userId, postId) values (".$row['owTid'].", ".$row['owUid'].", ".$row['owPid'].")";
-		   ins($link,$q);
-		}
-		
-		else {
-  		  if ($row['postid']>$row['owPid']) {
-		  }
-		  else {   //ce am citit in OW e mai mare decat ce am in SMF
-		    if (isset($row['rev_id_msg'])) {
-				wlog("update in SMF (T=".$row['smfTid'].", U=".$row['smfUid'].", P=".$row['rev_id_msg'].")",true);
-				$q = "UPDATE smf_log_topics set postid = (SELECT MAX(id_msg) FROM smf_messages) where id_member = ".$row['smfUid']." and id_topic=".$row['smfTid'];
-				ins($link, $q);
-		    }
-		  }
-		}
-		*/
-		
-
-
 
 			
 function ow2smf($link) {	 
@@ -210,6 +107,39 @@ global $MSG_LIMIT;
  }
  
 		
+function import_last_read_post ($link, $update=false) {
+// toate topicurile pt toti userii
+$last_read_post1 ="insert into ow_forum_read_topic (topicId, userId, postId) SELECT t.id AS tid, u.id AS uid, MAX(m.id) pid FROM ow_forum_topic t CROSS JOIN ow_base_user u INNER JOIN ow_forum_post m ON m.topicid=t.id GROUP BY t.id, u.id ";
+//omise topicurile din grupul 
+
+
+
+$last_read_post2 ="UPDATE ow_forum_read_topic r 
+                   INNER JOIN (SELECT t.ow_id AS tid, u.ow_id AS uid, m.ow_id AS pid  FROM 
+								( SELECT  l.id_topic AS tid, l.id_member AS uid, 
+										(SELECT MAX(id_msg) FROM smf_messages m2 WHERE m2.id_msg<=l.id_msg AND m2.id_topic=l.`id_topic`) AS pid 
+										FROM smf_log_topics l 
+								) AS x 
+								INNER JOIN smf_messages m ON m.`id_msg`=x.pid 
+								INNER JOIN smf_topics t ON t.`id_topic` = x.tid 
+								INNER JOIN smf_members u ON u.`id_member`=x.uid 
+								WHERE m.ow_id IS NOT NULL 
+							) z ON z.tid=r.`topicId` AND z.uid=r.`userId` SET r.`postId`=z.pid WHERE r.`topicId`=z.tid  AND r.`userId`=z.uid ";
+
+		 
+   	$query = "TRUNCATE TABLE `ow_forum_read_topic`";
+    ins($link, $query);
+
+        wlog("Import last_read_post...",true);
+		
+		ins($link, $last_read_post1);
+		
+		ins($link, $last_read_post2);
+		
+} 		
+		
+
+		
 		
 function import_last_read_post_the_easy_way($link, $update=false)		 {
 
@@ -218,27 +148,30 @@ function import_last_read_post_the_easy_way($link, $update=false)		 {
       //doar la importu mare
       wlog('truncate table',true);
 	  $query = "TRUNCATE TABLE `ow_forum_read_topic`";
-      //ins($link, $query);
+      ins($link, $query);
 	   
       wlog('cross join',true);	   
 	  $last_read_cross ="insert into ow_forum_read_topic (topicId, userId, postId) SELECT t.id AS tid, u.id AS uid, MAX(m.id) pid FROM ow_forum_topic t CROSS JOIN ow_base_user u INNER JOIN ow_forum_post m ON m.topicid=t.id GROUP BY t.id, u.id ";
-     // ins($link, $last_read_cross);
+	  ins($link, $last_read_cross);
 
-	  
+	  //return;
       wlog('pt ce am in log in ow caut in smf',true);	   
-      $ds = "SELECT * from ow_log WHERE owuid=3";
-
+      $ds = "SELECT * from ow_log WHERE owuid=3 or owuid=2 order by owuid";
+      $ds="SELECT t.id AS owTid, u.id AS owUid FROM ow_forum_topic t CROSS JOIN ow_base_user u where u.id in (3)";
+	  
       $result = mysqli_query($link, $ds);
       if ($result) {
          wlog(sprintf("*******ow_log: %d rows.\n", mysqli_num_rows($result)),true);
 	     while($row = mysqli_fetch_array($result)) {
 		 
-		   wlog("caut pt U-T, smf=".$row['smfUid']."-".$row['smfTid'].", ow=".$row['owUid']."-".$row['owTid'], true);
-		   $last_read_in_smf = getLastReadInSmf ($link, $row['owUid'], $row['owTid']);
-		   if ($last_read_in_smf < $row['owPid']) {
-   	          wlog($last_read_in_smf."<".$row['owPid'],true);
-	          $q = "UPDATE ow_forum_read_topic set postId = ".$last_read_in_smf." where userId=".$row['owUid']." and topicId = ".$row['owTid'];
-			}  
+		//   wlog("caut pt U-T, smf=".$row['smfUid']."-".$row['smfTid'].", ow=".$row['owUid']."-".$row['owTid'], true);
+	      wlog("caut pt U-T, ow=".$row['owUid']."-".$row['owTid'], true);
+          $last_read_in_smf = getLastReadInSmf ($link, $row['owUid'], $row['owTid']);
+
+		  $q = "UPDATE ow_forum_read_topic set postId = ".$last_read_in_smf." where userId=".$row['owUid']." and topicId = ".$row['owTid']." and postId>".$last_read_in_smf;
+		  $k=upd_log($link, $q);
+		  if ($k!=0) wlog("->".$k, true);
+			
 		  }
 		 
       }//if result
