@@ -36,11 +36,9 @@ wlog($eol."***************************".$eol);
   	
   update_last_reply($link);
   
-  import_likes($link);
-
-   //import_last_read_post_the_easy_way($link);
+  import_last_read_post_the_easy_way($link);
   
-  import_last_read_post($link);
+  import_likes($link);
   
   mysqli_close($link);
 
