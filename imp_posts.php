@@ -166,7 +166,7 @@ function import_topics ($link,$update=false) //from topics
 	 if (! ($id % 10)) echo "$id..." ;
 	 if (! ($id % 300)) echo "<br>";
   }
-    wlog("Topics Done</br>",true);
+    wlog("Topics Done",true);
   mysqli_free_result($result);
 }
 
@@ -216,8 +216,8 @@ function import_posts ($link,$update=false) //from topics
 	 upd($link, 'smf_messages', 'id_msg', $row['id_msg'], $id_ins);
 	 
 	 $id++;
-	 if (! ($id % 100)) echo "$id..." ;
-	 if (! ($id % 2500)) echo "<br>".$eol;
+	 if (! ($id % 1000)) echo "$id..." ;
+	 if (! ($id % 5000)) echo "<br>".$eol;
 	 flush();
 	 ob_flush();
   }

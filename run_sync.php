@@ -37,11 +37,11 @@ if (!$link) {
 /**********************************************************************/
 
   update_last_reply($link, true);
-
-  //  import_likes($link, true);
   
-  //import_last_read_post($link, true);
-  //import_last_read_post_the_easy_way($link, true);
+  // import_last_read_post($link, true);
+  import_last_read_post_the_easy_way($link, true);
+  //  import_likes($link, true);
+
   
   mysqli_close($link);
   

@@ -153,37 +153,56 @@ function import_last_read_post_the_easy_way($link, $update=false)		 {
       wlog('cross join',true);	   
 	  $last_read_cross ="insert into ow_forum_read_topic (topicId, userId, postId) SELECT t.id AS tid, u.id AS uid, MAX(m.id) pid FROM ow_forum_topic t CROSS JOIN ow_base_user u INNER JOIN ow_forum_post m ON m.topicid=t.id GROUP BY t.id, u.id ";
 	  ins($link, $last_read_cross);
-
-	  //return;
-      wlog('pt ce am in log in ow caut in smf',true);	   
-      $ds = "SELECT * from ow_log WHERE owuid=3 or owuid=2 order by owuid";
-      $ds="SELECT t.id AS owTid, u.id AS owUid FROM ow_forum_topic t CROSS JOIN ow_base_user u where u.id in (3)";
+	 }
+	 
+	 $cond = "WHERE z.smfPid<z.owPid";
+	 if ($update) $cond = "WHERE z.smfPid!=z.owPid";
+	 
+	  $ds="SELECT * FROM (
+				SELECT topicid AS owTid, userid AS owUid, 
+					  (SELECT id_topic FROM smf_topics WHERE ow_id=ow.topicid) AS smfTid,
+						  (SELECT id_member FROM smf_members WHERE ow_id=ow.userid) AS smfUid, 
+						  postid AS owPid,  getLastReadInSmf(userid, topicid) AS smfPid 
+					 FROM ow_forum_read_topic ow
+					WHERE 1=1 AND ow.userid=3
+			) z ".$cond;
 	  
       $result = mysqli_query($link, $ds);
       if ($result) {
-         wlog(sprintf("*******ow_log: %d rows.\n", mysqli_num_rows($result)),true);
+         wlog(sprintf("*******ow_log: %d rows different.\n", mysqli_num_rows($result)),true);
 	     while($row = mysqli_fetch_array($result)) {
 		 
-		//   wlog("caut pt U-T, smf=".$row['smfUid']."-".$row['smfTid'].", ow=".$row['owUid']."-".$row['owTid'], true);
-	      wlog("caut pt U-T, ow=".$row['owUid']."-".$row['owTid'], true);
-          $last_read_in_smf = getLastReadInSmf ($link, $row['owUid'], $row['owTid']);
-
-		  $q = "UPDATE ow_forum_read_topic set postId = ".$last_read_in_smf." where userId=".$row['owUid']." and topicId = ".$row['owTid']." and postId>".$last_read_in_smf;
-		  $k=upd_log($link, $q);
-		  if ($k!=0) wlog("->".$k, true);
+		    if ($row['smfPid'] < $row['owPid']) {  //am in smf necitite
+				wlog("update OW (U-T): ow=".$row['owUid']."-".$row['owTid'], true);
+		  
+				$q = "UPDATE ow_forum_read_topic set postId = ".$row['smfPid']." where userId=".	$row['owUid']." and topicId = ".$row['owTid'];
+				$k=upd_log($link, $q);
+				if ($k!=0) wlog($row['owPid']."->".$row['smfPid'], true);
+			} else {
+			    $q = "select count(*) cnt from smf_log_topics where id_member=".$row['smfUid']." and id_topic=".$row['smfTid'];
+				$result2 = mysqli_query($link, $q);
+				if ($result2) {
+				   $row = mysqli_fetch_array($result2);
+				    if ($row['cnt']==0) { //insert smf
+					    wlog("insert SMF (U-T): ".$row['smfUid']."-".$row['smfTid'], true);
+						$q="INSERT INTO smf_log_read_topics (id_member, id_topic, id_msg) VALUES (".$row['smfUid'].", ".$row['smfTid'].", (select id_msg from smf_messages where ow_id=".$row['owPid'].") )";
+						ins($link,$q);
+					}
+					else { //update smf
+					   wlog("update SMF (U-T): ".$row['smfUid']."-".$row['smfTid'], true);
+						$q="UPDATE smf_log_read_topics SET id_msg=(select id_msg from smf_messages where ow_id=".$row['owPid'].") where id_member=".$row['smfUid']." and id_topic=".$row['smfTid'];
+ 					   $k=upd_log($link, $q);
+					   wlog(sprintf("%d rows updated",$k),true);
+					   
+					}
+				} //if result2
+			} //if < 
 			
-		  }
-		 
+		  }//while
       }//if result
-
-   }//if update
 }
 		
-		
-		
-		
-			
-		
+	
 		
 
 ?>
