@@ -11,6 +11,7 @@ include 'imp_users.php';
 include 'imp_posts.php';
 include 'imp_after.php';
 include 'util.php';
+
 wlog($eol."***************************".$eol);
 $link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
 
@@ -20,6 +21,7 @@ if (!$link) {
   wlog("Connected successfully",true);
 
   mysqli_query($link,"SET NAMES utf8");
+
   
   update_users($link, true);
   
@@ -30,14 +32,18 @@ if (!$link) {
   import_topics($link, true);  //smf_topics -> ow_forum_topic
   
   import_posts($link, true);  //smf_messages -> ow_forum_post
-  	
-  update_last_reply($link, true);
-  
-  import_likes($link, true);
-	
-  import_last_read_post($link, true);
 
+  ow2smf($link);  //ow->smf posts
+/**********************************************************************/
+
+  update_last_reply($link, true);
+
+  //  import_likes($link, true);
+  
+  //import_last_read_post($link, true);
+  //import_last_read_post_the_easy_way($link, true);
+  
   mysqli_close($link);
   
-  wlog("All done!",true);
+  wlog("Sync done!",true);
 ?>

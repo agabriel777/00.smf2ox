@@ -23,6 +23,8 @@ LIMIT 1)
 WHERE id_member_started=0
 
 
+
+
 -- dupa import
 
 
