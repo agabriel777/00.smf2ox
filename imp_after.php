@@ -140,13 +140,13 @@ function import_last_read_post_the_easy_way($link, $update=false)		 {
 				   $row2 = mysqli_fetch_array($result2);
 				    if ($row2['cnt']==0) { //insert smf
 					    wlog("insert SMF (U-T): ".$row['smfUid']."-".$row['smfTid'], true);
-						$q="INSERT INTO smf_log_read_topics (id_member, id_topic, id_msg) VALUES (".$row['smfUid'].", ".$row['smfTid'].", (select id_msg from smf_messages where ow_id=".$row['owPid'].") )";
-						//ins($link,$q);
+						$q="INSERT INTO smf_log_topics (id_member, id_topic, id_msg) VALUES (".$row['smfUid'].", ".$row['smfTid'].", (select id_msg from smf_messages where ow_id=".$row['owPid'].") )";
+						ins($link,$q);
 					}
 					else { 
 					   wlog("update SMF (U-T): ".$row['smfUid']."-".$row['smfTid'], true);
-						$q="UPDATE smf_log_read_topics SET id_msg=(select id_msg from smf_messages where ow_id=".$row['owPid'].") where id_member=".$row['smfUid']." and id_topic=".$row['smfTid'];
- 					   //$k=upd_log($link, $q);
+						$q="UPDATE smf_log_topics SET id_msg=(select id_msg from smf_messages where ow_id=".$row['owPid'].") where id_member=".$row['smfUid']." and id_topic=".$row['smfTid'];
+ 					   $k=upd_log($link, $q);
 					   $k=0;
 					   wlog(sprintf("%d rows updated",$k),true);
 					   
