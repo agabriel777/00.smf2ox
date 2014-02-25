@@ -108,15 +108,24 @@ function import_last_read_post_the_easy_way($link, $update=false)
 		ins($link, $last_read_cross);
 	}
 	else wlog('Running the Update Script',true);
-	$cond = "WHERE z.smfPid<>z.owPid";	if ($update) $cond = "WHERE z.smfPid!=z.owPid";
-	$ds="SELECT * FROM (
-		SELECT topicid AS owTid, userid AS owUid,
+	
+	$cond = "WHERE smfPid<>owPid";	if ($update) $cond = "WHERE smfPid!=owPid";
+
+	/*optimizare: alea doua sleect-uri pt smfid-uri le faceam si aici si in functie de fiecare data. le iau doar in select si le trimit ca parametru functiei
+	*/
+	
+	$ds="SELECT x.* FROM (
+						SELECT z.*, getLastReadInSmf(owUid, owTid, smfUid, smfTid) AS smfPid
+			   FROM (
+					SELECT topicid AS owTid, userid AS owUid,
 		(SELECT id_topic FROM smf_topics WHERE ow_id=ow.topicid) AS smfTid,
 		(SELECT id_member FROM smf_members WHERE ow_id=ow.userid) AS smfUid,
-		postid AS owPid,  getLastReadInSmf(userid, topicid) AS smfPid
-		FROM ow_forum_read_topic ow";
-		/*		"-- WHERE 1=1 AND ow.userid in (2,3)". 		Nu a mers altfel! */
-		$ds.=") z ".$cond;
+	        postid AS owPid  
+		FROM ow_forum_read_topic ow 
+		-- WHERE 1=1 AND ow.userid in (2,3,4,5)
+		) z
+		) X ".$cond;
+		
 		$result = mysqli_query($link, $ds);
 	if ($result)
 	{		
