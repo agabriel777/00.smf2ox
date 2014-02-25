@@ -98,7 +98,7 @@ global $MSG_LIMIT;
 function import_last_read_post_the_easy_way($link, $update=false)
 {
 	wlog("Import last_read_post...",true);
-	if (!$update
+	if (!$update)
 	{
 		/*doar la import*/
 		wlog('truncate table',true);
