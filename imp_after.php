@@ -172,7 +172,7 @@ function import_last_read_post_the_easy_way($link, $update=false)		 {
          wlog(sprintf("*******ow_log: %d rows different.\n", mysqli_num_rows($result)),true);
 	     while($row = mysqli_fetch_array($result)) {
 		 
-		    if ($row['smfPid'] < $row['owPid']) {  //am in smf necitite
+		    if ($row['smfPid'] < $row['owPid']) {  //am in smf necitite - ar trebui sa intre doar aici pe update
 				wlog("update OW (U-T): ow=".$row['owUid']."-".$row['owTid'], true);
 		  
 				$q = "UPDATE ow_forum_read_topic set postId = ".$row['smfPid']." where userId=".	$row['owUid']." and topicId = ".$row['owTid'];
