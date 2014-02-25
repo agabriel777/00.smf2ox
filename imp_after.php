@@ -93,7 +93,7 @@ global $MSG_LIMIT;
 		
 	
 		
-<<<<<<< HEAD
+
 function import_last_read_post_the_easy_way($link, $update=false)		 {
 
     wlog("Import last_read_post...",true);
@@ -159,7 +159,7 @@ function import_last_read_post_the_easy_way($link, $update=false)		 {
 }
 			
 		
-=======
+
 function import_last_read_post_the_easy_way($link, $update=false)
 {
 	wlog("Import last_read_post...",true);
@@ -262,6 +262,5 @@ function OW_MarkRead($link, $OW_User, $SMF_User, $OW_Topic, $SMF_Topic, $OW_PID,
 	if ($k!=0) wlog("Topic Read in SMF. Updated OXWALL for U-T:".$OW_User."-".$OW_Topic.". OW_PID:".$OW_PID."|SMF Pid:".$SMF_PID."", true);
 }
 
->>>>>>> 03989a6e48f602f2f03d2005be493472007fafc2
 
 ?>
