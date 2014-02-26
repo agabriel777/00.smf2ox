@@ -122,7 +122,6 @@ function import_last_read_post_the_easy_way($link, $update=false)
 		(SELECT id_member FROM smf_members WHERE ow_id=ow.userid) AS smfUid,
 	        postid AS owPid  
 		FROM ow_forum_read_topic ow 
-		-- WHERE 1=1 AND ow.userid in (2,3,4,5)
 		) z
 		) X ".$cond;
 		
