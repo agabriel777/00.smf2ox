@@ -9,6 +9,9 @@ function update_last_reply ($link,$update = false) {  //OW last reply in topic
 
 function import_likes($link,$update=false) {//import thanks
 
+if ($update) $cond = " where log_time > ".strtotime($IMPORT_DATE);
+
+
 $qLikes = "INSERT INTO `ow_newsfeed_like` (`entityType`,`entityId`,`userId`,`timeStamp`) 
 			   SELECT 'forum-post', m.`ow_id`, u.`ow_id`, g.`log_time`
 			   FROM smf_log_gpbp g 
@@ -17,8 +20,7 @@ $qLikes = "INSERT INTO `ow_newsfeed_like` (`entityType`,`entityId`,`userId`,`tim
 			   LEFT JOIN ow_newsfeed_like n ON n.entityID=m.ow_id AND n.userid=u.ow_id
 			   WHERE 1=1 -- m.ow_id IS NOT NULL
 			   AND n.id IS NULL
-			   AND g.score>0
-";
+			   AND g.score>0".$cond;
 
 
 	if (!$update) {	 

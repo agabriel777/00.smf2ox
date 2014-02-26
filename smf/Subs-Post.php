@@ -1728,20 +1728,27 @@ function sendNotifications($topics, $type, $exclude = array(), $members_only = a
 
 
 function UpdOxWall($smfid) {
-	$SQL_HOST = "127.0.0.1";
-	$SQL_PORT = "";
-	$SQL_USER = "vaspun";
-	$SQL_PASS = "fa0yuabb";
-	$SQL_DB   = "vaspun";
-	$LOG_FILE_NAME = '/var/www/sites/vaspun.eu/smf2ox/smf2ox.log';
-	$eol = "<br>";
+
+include '..\smf2ox\util.php';
+include '..\smf2ox\config.php';
+
+global $SQL_HOST, $SQL_PORT, $SQL_USER,	$SQL_PASS, $SQL_DB;
 
 	wlog($eol."*****SMF -> OxWall**********************".$eol);
 	$link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
-	if (!$link) { 
-		$result = mysqli_query($link, "CALL updOxWallProcName(".$smfid.")") or die("Query fail: " . mysqli_error());
+	if ($link) { 
+	    $ins_id = getValue($link, "SELECT updOxWallProcName(".$smfid.")");
+  	    if ($ins_id!=0) {
+	  	    $result = mysqli_query($link, "SELECT text from ow_forum_post where id=".$ins_id);
+			if ($result) { 
+				$row = mysqli_fetch_array($result);
+			    $text = mysqli_real_escape_string($link,bbcode_to_html($row['text']));
+				$k = upd_log($link, "UPDATE ow_forum_post set text = ".$text."where id=".$ins_id);
+				wlog("affected rows: ".$k,true);
+			}
+		}
     }        
-	return $result;
+	return $k;
 }
 
 
