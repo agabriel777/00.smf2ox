@@ -7,4 +7,6 @@ $SQL_DB   = "database";
 $LOG_FILE_NAME = 'smf2ox.log';
 $eol = "<br>";
 $MSG_LIMIT = 10; //limita de mesaje care se imoporta OW->SMF
+
+$IMPORT_DATE = '15-02-2014';
 ?>

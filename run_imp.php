@@ -23,7 +23,6 @@ wlog($eol."***************************".$eol);
 
   mysqli_query($link,"SET NAMES utf8");
   
-
   update_users($link);
   
   import_sections ($link); //smf_categories -> ow_forum_section

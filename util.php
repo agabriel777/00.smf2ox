@@ -227,4 +227,18 @@ function bbcode_to_html($bbtext){
 //========================= END OF FUNCTION ===========================//
 
 
+
+
+function markOxWall($arr) {
+//$markArray[] = array($modSettings['maxMsgID'], $user_info['id'], $topic);
+	  foreach ($arr as $line) {
+	    $ret = getValue($link, "SELECT markOxWall(".$line[1].", ".$line[2].", ".$line[0].")");
+	  }
+	
+	}
+
+
+
+
+
 ?>
