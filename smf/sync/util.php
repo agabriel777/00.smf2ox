@@ -1,27 +1,41 @@
 <?php
-include 'config.php';
+include '\..\..\..\smf2ox\config.php';
 
+function markOxWall ($uid, $tid, $pid)
+{
+    global $SQL_HOST, $SQL_PORT, $SQL_USER,	$SQL_PASS, $SQL_DB, $eol;
+
+    wlog($eol."*****markLastRead*********************".$eol,true);
+	
+    $link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
+    if ($link)
+    {
+        $ins_id = getValue($link, "SELECT markOxWall($uid,$tid,$pid)");
+		wlog("ret_id =  $ins_id",true);
+    }
+
+}
 
 function UpdOxWall($smfid)
 {
-
-    global $SQL_HOST, $SQL_PORT, $SQL_USER,	$SQL_PASS, $SQL_DB;
-
-    wlog($SQL_PASS,true);
+    global $SQL_HOST, $SQL_PORT, $SQL_USER,	$SQL_PASS, $SQL_DB, $eol;
 
     wlog($eol."*****SMF -> OxWall**********************".$eol);
     $link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
     if ($link)
     {
-        $ins_id = getValue($link, "SELECT updOxWallProcName(".$smfid.")");
+        $ins_id = getValue($link, "SELECT updOxWall(".$smfid.")");
         if ($ins_id!=0)
         {
             $result = mysqli_query($link, "SELECT text from ow_forum_post where id=".$ins_id);
             if ($result)
             {
                 $row = mysqli_fetch_array($result);
-                $text = mysqli_real_escape_string($link,bbcode_to_html($row['text']));
-                $k = upd_log($link, "UPDATE ow_forum_post set text = ".$text."where id=".$ins_id);
+				wlog($row['text'],true);
+                $text = bbcode_to_html($row['text']);
+				//wlog($text,true);
+				//wlog(mysqli_real_escape_string($link,$text),true);
+                $k = upd_log($link, "UPDATE ow_forum_post set text = '".mysqli_real_escape_string($link,$text)."' where id=".$ins_id);
                 wlog("affected rows: ".$k,true);
             }
         }
@@ -29,6 +43,64 @@ function UpdOxWall($smfid)
     return $k;
 }
 
+function ThankYou($smfUid, $smfPid)
+{
+    global $SQL_HOST, $SQL_PORT, $SQL_USER,	$SQL_PASS, $SQL_DB, $eol;
+
+    wlog($eol."*****Thanks**********************".$eol);
+    $link = mysqli_connect($SQL_HOST.$SQL_PORT, $SQL_USER , $SQL_PASS , $SQL_DB);
+    if ($link)
+    {
+	// insert in ow_newsfeed_like for score>0
+	    $q = "INSERT INTO `ow_newsfeed_like` (`entityType`,`entityId`,`userId`,`timeStamp`)
+              SELECT 'forum-post', m.`ow_id`, u.`ow_id`, g.`log_time`
+              FROM smf_log_gpbp g
+              INNER JOIN smf_messages m ON m.`id_msg` = g.`id_msg`
+              INNER JOIN smf_members u ON u.`id_member`=g.`id_member`
+              WHERE 1=1 
+              AND n.id IS NULL
+              AND g.score>0 
+			  AND g.id_member = $smfUid 
+			  AND g.id_msg = $smfPid");
+        $ins_id = ins($link, $q);
+    }
+    return $ins_id;
+}
+
+function upd_log($link, $query)
+{
+    global $eol;
+  echo $query;
+    $result = mysqli_query($link, $query);
+    if (!$result)
+    {
+        wlog("E!: ".mysqli_error($link).$eol.$query.$eol,true);
+        $result = -1;
+    }
+    else
+    {
+        $result = mysqli_affected_rows($link);
+    }
+    return $result;
+}
+
+
+function getValue ($link, $query)
+{
+    global $eol;
+
+    $result = mysqli_query($link, $query);
+    if (!$result)
+    {
+        wlog("E!: ".mysqli_error($link).$eol.$query.$eol,true);
+    }
+    else
+    {
+        $row = mysqli_fetch_array($result);
+        $result = $row[0];
+    }
+    return $result;
+}
 
 function wlog($logstr, $onScreen = false)
 {
