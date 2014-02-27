@@ -3,13 +3,14 @@
 function update_last_reply ($link,$update = false)    //OW last reply in topic
 {
     $q_update_last_reply = "UPDATE ow_forum_topic t SET t.lastPostId = (SELECT MAX(id) FROM ow_forum_post p WHERE p.topicId=t.id)";
+
     wlog("update last_reply...",true);
     ins($link, $q_update_last_reply);
 }
 
 function import_likes($link,$update=false)  //import thanks
 {
-    $cond = "";
+
     if ($update) $cond = " where log_time > ".strtotime($IMPORT_DATE);
 
 
@@ -19,9 +20,9 @@ function import_likes($link,$update=false)  //import thanks
               INNER JOIN smf_messages m ON m.`id_msg` = g.`id_msg`
               INNER JOIN smf_members u ON u.`id_member`=g.`id_member`
               LEFT JOIN ow_newsfeed_like n ON n.entityID=m.ow_id AND n.userid=u.ow_id
-              WHERE 1=1 
+              WHERE 1=1 -- m.ow_id IS NOT NULL
               AND n.id IS NULL
-              AND g.score>0 ".$cond;
+              AND g.score>0".$cond;
 
 
     if (!$update)
@@ -39,6 +40,65 @@ function import_likes($link,$update=false)  //import thanks
     ins($link, $qLikes);
 
 }
+
+
+
+
+function ow2smf($link)
+{
+    global $MSG_LIMIT;
+
+    //update SMF last_message in topic
+    $qReverse2 = "UPDATE smf_topics t INNER JOIN (SELECT MAX(m.id_msg) maxid, m.`id_topic` FROM smf_messages m GROUP BY m.`id_topic`) z ON z.id_topic = t.`id_topic` SET t.`id_last_msg`= z.maxid ";
+
+    //update SMF max_msg_id
+    $qReverse3 ="UPDATE smf_settings s SET `value`=(SELECT MAX(id_msg) FROM smf_messages) WHERE variable = 'maxMsgID'";
+
+
+
+    wlog("oxwall->smf - import", true);
+
+    //mesajele din ow care trebuie importate
+    $qOW = "SELECT t.`id_topic`, t.`id_board`,  p.`createStamp`, u.`id_member`, 0, (SELECT title FROM ow_forum_topic WHERE id=p.topicid) AS `subject`, u.`member_name`, u.`email_address`, 0, 1, 0, '', p.`text`, 'xx', 1, 0, p.`id` FROM ow_forum_post p LEFT JOIN smf_topics t ON t.`ow_id` = p.`topicId` LEFT JOIN smf_members u ON u.`ow_id`=p.`userId` WHERE p.isFromImport=0 LIMIT ".$MSG_LIMIT;
+
+    $result = mysqli_query($link, $qOW);
+
+    wlog(sprintf("*******ow_forum_post: %d rows.\n", mysqli_num_rows($result)),true);
+    while($row = mysqli_fetch_array($result))
+    {
+        if ($row['id'] != 0)
+        {
+            // echo $eol;
+            wlog("se importa din OW mesajul cu id=".$row['id'],true);
+            $qReverse ="INSERT INTO `vaspun`.`smf_messages` (`id_topic`,`id_board`,`poster_time`,`id_member`,`id_msg_modified`, `subject`, `poster_name`, `poster_email`, `poster_ip`,`smileys_enabled`, `modified_time`,`modified_name`,`body`,`icon`,`approved`,`gpbp_score`,`ow_id`) VALUES (";
+
+            $qReverse .=$row['id_topic'].", ".$row['id_board'].", ".$row['createStamp'].", ".$row['id_member'].", 0, '".$row['subject']."', '".$row['member_name']."', '".$row['email_address']."', 'oxwall', 1, 0, '', '".mysqli_real_escape_string($link, $row['text'])."', 'xx', 1, 0, ".$row['id'].")";
+
+            $ins_id = ins($link,$qReverse);
+            if ($ins_id!=-1)
+            {
+                wlog("mesaj inserat cu SMF id=".$ins_id,true);
+                $q = "update smf_messages set id_msg_modified = id_msg where id_msg = ".$ins_id;
+                ins($link,$q);
+
+                $q =  "UPDATE ow_forum_post set isFromImport=9 where id = ".$row['id'];
+                ins($link, $q);
+
+                $q = "UPDATE smf_log_topics set id_msg = ".$ins_id." where id_member = ".$row['id_member']." and id_topic=".$row['id_topic'];
+                ins($link, $q);
+
+            }
+
+        }
+    }
+
+    wlog("oxwall->smf - update last message in topic",true);
+    ins($link, $qReverse2);
+
+    wlog("oxwall->smf - update settings max_msg_id",true);
+    ins($link, $qReverse3);
+}
+
 
 
 

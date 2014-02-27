@@ -1,6 +1,48 @@
 <?php
 include 'config.php';
 
+
+function getLastReadInSmf ($link, $uid, $tid) {
+global $eol;
+
+    $q="select * from smf_log where owUid=".$uid." and owTid=".$tid;
+    $result = mysqli_query($link, $q);
+  	if (!$result) {
+	   wlog("E!: ".mysqli_error($link).$eol.$query.$eol,true);
+	} 
+	else { 
+	
+	   $row = mysqli_fetch_array($result);
+	   if (!isset($row['owPid'])) { //nu am linie, caut in board
+ 		 $ql="SELECT ow_id from smf_messages where id_msg=( SELECT MAX(m.id_msg) FROM smf_messages m
+              INNER JOIN smf_topics t ON t.id_topic=m.id_topic
+               INNER JOIN smf_log_mark_read mr ON mr.id_board=t.id_board 
+			                                   AND mr.id_member = (SELECT id_member FROM smf_members WHERE ow_id=".$uid.")
+               WHERE t.ow_id=".$tid." AND m.id_msg<=mr.id_msg)";
+		 $result = getValue($link, $ql);
+  
+	   } else {$result = $row['owPid'];}//iau ce rezulta din view}
+	}
+	
+	return $result;
+}	
+
+
+		
+function getValue ($link, $query) {
+global $eol;
+
+    $result = mysqli_query($link, $query);
+  	if (!$result) {
+	   wlog("E!: ".mysqli_error($link).$eol.$query.$eol,true);
+	} 
+	else { 
+	   $row = mysqli_fetch_array($result);
+       $result = $row[0];
+	}
+	return $result;
+}	
+		
 		
 function upd_log($link, $query)
 {
@@ -14,8 +56,9 @@ global $eol;
 	else { $result = mysqli_affected_rows($link); }
 	return $result;
 }	
-		
-		
+
+
+
 function ins($link, $query)
 {
 global $eol;
@@ -58,6 +101,10 @@ function wlog($logstr, $onScreen = false) {
 }
 
 
+
+//======================== START OF FUNCTION ==========================//
+// FUNCTION: bbcode_to_html                                            //
+//=====================================================================//
 function bbcode_to_html($bbtext){
   $bbtags = array(
 
@@ -175,6 +222,10 @@ function bbcode_to_html($bbtext){
   
   return $bbtext;
 }
+//=====================================================================//
+//  FUNCTION: bbcode_to_html                                           //
+//========================= END OF FUNCTION ===========================//
+
 
 
 

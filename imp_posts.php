@@ -200,7 +200,7 @@ function import_posts ($link,$update=false) //from topics
  
   $qsmf = "select * from smf_messages ";
   if ($update) { $qsmf .= "where ow_id is null "; }
-  $qsmf .= "order by id_msg LIMIT 1000000 ";
+  $qsmf .= "order by id_msg ";
 
   
   $result = mysqli_query($link, $qsmf);

@@ -1,2 +1,4 @@
 config.php
 smf2ox.log
+sync\config.php
+sync\sync.log
