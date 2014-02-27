@@ -46,6 +46,7 @@ function import_likes($link,$update=false)  //import thanks
 
 function import_last_read_post_the_easy_way($link, $update=false)
 {
+<<<<<<< HEAD
     wlog("Import last_read_post...",true);
     if (!$update)
     {
@@ -118,6 +119,77 @@ function import_last_read_post_the_easy_way($link, $update=false)
     {
         wlog('No result for '.$ds,true);
     }
+=======
+	wlog("Import last_read_post...",true);
+	if (!$update)
+	{
+		/*doar la import*/
+		wlog('truncate table',true);
+		$query = "TRUNCATE TABLE `ow_forum_read_topic`";
+		ins($link, $query);		wlog('cross join',true);
+		$last_read_cross ="insert into ow_forum_read_topic (topicId, userId, postId) SELECT t.id AS tid, u.id AS uid, MAX(m.id) pid FROM ow_forum_topic t CROSS JOIN ow_base_user u INNER JOIN ow_forum_post m ON m.topicid=t.id GROUP BY t.id, u.id ";
+		ins($link, $last_read_cross);
+	}
+	else wlog('Running the Update Script',true);
+	
+	$cond = "WHERE smfPid<>owPid";	if ($update) $cond = "WHERE smfPid!=owPid";
+
+	/*optimizare: alea doua sleect-uri pt smfid-uri le faceam si aici si in functie de fiecare data. le iau doar in select si le trimit ca parametru functiei
+	*/
+	
+	$ds="SELECT x.* FROM (
+						SELECT z.*, getLastReadInSmf(owUid, owTid, smfUid, smfTid) AS smfPid
+			   FROM (
+					SELECT topicid AS owTid, userid AS owUid,
+		(SELECT id_topic FROM smf_topics WHERE ow_id=ow.topicid) AS smfTid,
+		(SELECT id_member FROM smf_members WHERE ow_id=ow.userid) AS smfUid,
+	        postid AS owPid  
+		FROM ow_forum_read_topic ow 
+		) z
+		) X ".$cond;
+		
+		$result = mysqli_query($link, $ds);
+	if ($result)
+	{		
+		wlog(sprintf("*******ow_log: %d rows different.\n", mysqli_num_rows($result)),true);
+		while($row = mysqli_fetch_array($result))
+		{
+			if ($row['smfPid'] < $row['owPid'])
+			{
+				/*am in smf necitite*/
+				if ($update)
+				{
+					/* Daca e update, atunci inseamna ca au fost citite in OW => Update SMF	*/
+					SMF_MarkRead($link, $row['owUid'], $row['smfUid'], $row['owTid'], $row['smfTid'], $row['owPid'], $row['smfPid']);
+				}
+				else
+				{
+					/* Daca e import, atunci inseamna ca sunt necitite in SMF => Update in OW*/
+					OW_MarkRead($link, $row['owUid'], $row['smfUid'], $row['owTid'], $row['smfTid'], $row['owPid'], $row['smfPid']);
+				}
+			}
+			else
+			{
+				if ($update)
+				{
+					/* Daca e update, atunci inseamna ca au fost citite in SMF => Update in OW	*/
+					OW_MarkRead($link, $row['owUid'], $row['smfUid'], $row['owTid'], $row['smfTid'], $row['owPid'], $row['smfPid']);
+				}
+				else
+				{
+					/*
+					Daca e import, n-ar trebui sa faca nimic
+					probabil nu mai era cazul, dar ca sa nu iasa vreo 	belea :)
+					*/
+				}
+			}/*if < */
+		}/*while*/
+	}/*if result*/
+	else	
+	{		
+		wlog('No result for '.$ds,true);
+	}
+>>>>>>> bc56631d56c763409dbf23d2213a13c601079c08
 }
 
 
