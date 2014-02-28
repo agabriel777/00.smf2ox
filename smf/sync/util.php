@@ -63,7 +63,9 @@ function ThankYou($smfUid, $smfPid)
 			  AND g.id_member = $smfUid 
 			  AND g.id_msg = $smfPid");
         $ins_id = ins($link, $q);
+	    mysqli_close($link);
     }
+	
     return $ins_id;
 }
 
